@@ -13,7 +13,7 @@
 #import <React/RCTSurfacePresenter.h>
 #import <React/RCTSurfacePresenterBridgeAdapter.h>
 #import <ReactCommon/RCTTurboModuleManager.h>
-#import <better-dev-exp/DHDevHelper.h>
+#import <BetterDevExp/DHDevHelper.h>
 
 #import <react/config/ReactNativeConfig.h>
 
@@ -68,6 +68,11 @@
   if (builder.system == [UIMenuSystem mainSystem]) {
     [[DHDevHelper sharedHelper] buildMenuWithBuilder:builder];
   }
+}
+
+- (UIResponder *)nextResponder
+{
+  return  [[DHDevHelper sharedHelper] nextResponderInsteadOfResponder:[super nextResponder]];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge

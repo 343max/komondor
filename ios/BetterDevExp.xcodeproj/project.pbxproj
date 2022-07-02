@@ -30,7 +30,7 @@
 		50B73B892870AB47004EA23A /* DHMainWindowHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHMainWindowHandler.h; sourceTree = "<group>"; };
 		50B73B8A2870AB47004EA23A /* DHDevMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHDevMenu.h; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* BetterDevExp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BetterDevExp.h; sourceTree = "<group>"; };
-		B3E7B5891CC2AC0600A0062D /* BetterDevExp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BetterDevExp.m; sourceTree = "<group>"; };
+		B3E7B5891CC2AC0600A0062D /* BetterDevExp.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = BetterDevExp.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,7 +65,7 @@
 				50B73B852870AB47004EA23A /* NSArray+Map.h */,
 				50B73B862870AB47004EA23A /* NSArray+Map.m */,
 				B3E7B5881CC2AC0600A0062D /* BetterDevExp.h */,
-				B3E7B5891CC2AC0600A0062D /* BetterDevExp.m */,
+				B3E7B5891CC2AC0600A0062D /* BetterDevExp.mm */,
 				134814211AA4EA7D00B7C361 /* Products */,
 			);
 			sourceTree = "<group>";

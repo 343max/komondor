@@ -13,7 +13,7 @@
     "android",
     "ios",
     "cpp",
-    "better-dev-exp.podspec",
+    "BetterDevExp.podspec",
     "!lib/typescript/example",
     "!android/build",
     "!ios/build",
