@@ -6,10 +6,6 @@
 	objectVersion = 46;
 	objects = {
 
-/* Begin PBXBuildFile section */
-		5E555C0D2413F4C50049A1A2 /* BetterDevExp.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* BetterDevExp.m */; };
-/* End PBXBuildFile section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		58B511D91A9E6C8500147676 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -24,6 +20,15 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libBetterDevExp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libBetterDevExp.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		50B73B822870AB47004EA23A /* DHDevMenu.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DHDevMenu.m; sourceTree = "<group>"; };
+		50B73B832870AB47004EA23A /* DHMainWindowHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DHMainWindowHandler.m; sourceTree = "<group>"; };
+		50B73B842870AB47004EA23A /* DHDevHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHDevHelper.h; sourceTree = "<group>"; };
+		50B73B852870AB47004EA23A /* NSArray+Map.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSArray+Map.h"; sourceTree = "<group>"; };
+		50B73B862870AB47004EA23A /* NSArray+Map.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Map.m"; sourceTree = "<group>"; };
+		50B73B872870AB47004EA23A /* DHDevHelper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DHDevHelper.m; sourceTree = "<group>"; };
+		50B73B882870AB47004EA23A /* AppKitHeaders.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppKitHeaders.h; sourceTree = "<group>"; };
+		50B73B892870AB47004EA23A /* DHMainWindowHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHMainWindowHandler.h; sourceTree = "<group>"; };
+		50B73B8A2870AB47004EA23A /* DHDevMenu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DHDevMenu.h; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* BetterDevExp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BetterDevExp.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* BetterDevExp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BetterDevExp.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -50,6 +55,15 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				50B73B882870AB47004EA23A /* AppKitHeaders.h */,
+				50B73B842870AB47004EA23A /* DHDevHelper.h */,
+				50B73B872870AB47004EA23A /* DHDevHelper.m */,
+				50B73B8A2870AB47004EA23A /* DHDevMenu.h */,
+				50B73B822870AB47004EA23A /* DHDevMenu.m */,
+				50B73B892870AB47004EA23A /* DHMainWindowHandler.h */,
+				50B73B832870AB47004EA23A /* DHMainWindowHandler.m */,
+				50B73B852870AB47004EA23A /* NSArray+Map.h */,
+				50B73B862870AB47004EA23A /* NSArray+Map.m */,
 				B3E7B5881CC2AC0600A0062D /* BetterDevExp.h */,
 				B3E7B5891CC2AC0600A0062D /* BetterDevExp.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
@@ -113,7 +127,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B3E7B58A1CC2AC0600A0062D /* BetterDevExp.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

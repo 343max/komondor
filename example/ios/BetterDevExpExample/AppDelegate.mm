@@ -13,6 +13,7 @@
 #import <React/RCTSurfacePresenter.h>
 #import <React/RCTSurfacePresenterBridgeAdapter.h>
 #import <ReactCommon/RCTTurboModuleManager.h>
+#import <better-dev-exp/DHDevHelper.h>
 
 #import <react/config/ReactNativeConfig.h>
 
@@ -54,7 +55,19 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+  
+  [[DHDevHelper sharedHelper] setupWithBridge:bridge];
+
   return YES;
+}
+
+- (void)buildMenuWithBuilder:(id<UIMenuBuilder>)builder
+{
+  [super buildMenuWithBuilder:builder];
+  
+  if (builder.system == [UIMenuSystem mainSystem]) {
+    [[DHDevHelper sharedHelper] buildMenuWithBuilder:builder];
+  }
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
