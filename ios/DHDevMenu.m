@@ -188,12 +188,8 @@
     NSString *title = [item title];
     if ([title isEqualToString:@"Reload"]) {
       keyEquivalent = @"r";
-    } else if([title isEqualToString:@"Stop Debugging"] | [title isEqualToString:@"Debug with Chrome"]) {
-      keyEquivalent = @"d";
-    } else if([title isEqualToString:@"Show Perf Monitor"] | [title isEqualToString:@"Hide Perf Monitor"]) {
-      keyEquivalent = @"p";
     }
-    
+      
     SEL action = [self.menuResponder generateSelector:^{
       [item callHandler];
       [[UIMenuSystem mainSystem] setNeedsRebuild];
@@ -209,7 +205,7 @@
                                       image:nil
                                      action:action
                                       input:keyEquivalent
-                              modifierFlags:UIKeyModifierCommand | UIKeyModifierControl
+                              modifierFlags:UIKeyModifierCommand
                                propertyList:nil];
     }
   }] mutableCopy] ;
