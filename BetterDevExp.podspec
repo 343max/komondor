@@ -19,6 +19,8 @@ Pod::Spec.new do |s|
 
   s.dependency "React-Core"
 
+  # s.script_phase = { :name => 'Hello World', :script => 'puts "Hello World"', :shell_path => '/usr/bin/ruby' }
+
   # Don't install the dependencies when we run `pod install` in the old architecture.
   if ENV['RCT_NEW_ARCH_ENABLED'] == '1' then
     s.compiler_flags = folly_compiler_flags + " -DRCT_NEW_ARCH_ENABLED=1"

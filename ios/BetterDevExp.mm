@@ -1,5 +1,7 @@
 #import "BetterDevExp.h"
 
+#import <React/RCTBundleURLProvider.h>
+
 #ifdef RCT_NEW_ARCH_ENABLED
 #import "RNBetterDevExpSpec.h"
 #endif
@@ -19,7 +21,35 @@ RCT_REMAP_METHOD(multiply,
   resolve(result);
 }
 
-// Don't compile this code when we build for the old architecture.
+RCT_REMAP_METHOD(getUrlSchemes,
+                 getUrlSchemesWithResolver:(RCTPromiseResolveBlock)resolve
+                              withRejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSDictionary* dict = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleURLTypes"] firstObject];
+    
+    if (dict == nil) {
+        resolve(@[]);
+        return;
+    }
+    
+    NSArray *schemes = dict[@"CFBundleURLSchemes"];
+    
+    if (![schemes isKindOfClass:[NSArray class]]) {
+        resolve(@[]);
+        return;
+    }
+    
+    resolve(schemes);
+}
+
+RCT_REMAP_METHOD(isPackagerRunning, isPackagerRunningOnHost:(NSString *)host
+                                                     scheme:(NSString *)scheme
+                                               withResolver:(RCTPromiseResolveBlock)resolve
+                                               withRejecter:(RCTPromiseRejectBlock)reject) {
+    BOOL running = [RCTBundleURLProvider isPackagerRunning:host scheme:scheme];
+    resolve([NSNumber numberWithBool:running]);
+}
+
 #ifdef RCT_NEW_ARCH_ENABLED
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params

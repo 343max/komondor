@@ -1,18 +1,28 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text } from 'react-native';
-import { multiply } from 'better-dev-exp';
+import { StyleSheet, View, Text, TouchableOpacity, Share } from 'react-native';
+import { getUrlSchemes } from 'better-dev-exp';
 
 export default function App() {
-  const [result, setResult] = React.useState<number | undefined>();
+  const [urlSchemes, setUrlSchemes] = React.useState<string[]>([]);
 
   React.useEffect(() => {
-    multiply(3, 7).then(setResult);
+    getUrlSchemes().then(setUrlSchemes);
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text>Result: {result}</Text>
+      <Text>URL schemes:</Text>
+      {urlSchemes.map((scheme) => (
+        <TouchableOpacity
+          key={scheme}
+          onPress={() => {
+            Share.share({ message: scheme });
+          }}
+        >
+          <Text>{scheme}</Text>
+        </TouchableOpacity>
+      ))}
     </View>
   );
 }

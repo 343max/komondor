@@ -24,6 +24,21 @@ const BetterDevExp = BetterDevExpModule
       }
     );
 
-export function multiply(a: number, b: number): Promise<number> {
-  return BetterDevExp.multiply(a, b);
-}
+export type Bundle = {
+  url: string;
+  name: string;
+};
+
+export const getAvailableLocalBundles = async (): Promise<Bundle[]> => [];
+
+export const switchToBundle = async (bundleUrl: string): Promise<void> => {
+  // dummy!
+};
+
+export const getUrlSchemes = async (): Promise<string[]> =>
+  BetterDevExp.getUrlSchemes();
+
+export const isPackagerRunning = async (
+  host: string,
+  scheme?: string
+): Promise<boolean> => BetterDevExp.isPackagerRunning(host, scheme ?? null);

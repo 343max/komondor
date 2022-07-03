@@ -1,29 +1,27 @@
 # better-dev-exp
+
 Better Development Experience
+
 ## Installation
 
 ```sh
 npm install better-dev-exp
 ```
 
-## Usage
+## Installation
 
-```js
-import { multiply } from "better-dev-exp";
+Add URL Scheme to Info.plist
 
-// ...
-
-const result = await multiply(3, 7);
 ```
-
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
-
-## License
-
-MIT
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+<key>CFBundleURLTypes</key>
+<array>
+  <dict>
+    <key>CFBundleURLName</key>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>$(PRODUCT_BUNDLE_IDENTIFIER)-better-dev-exp</string>
+    </array>
+  </dict>
+</array>
+```
