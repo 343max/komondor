@@ -22,13 +22,15 @@ export const List = <T extends ListItem>({
   onPress = () => {},
 }: ListProps<T>) => (
   <View style={tw`m-3`}>
-    <Text style={tw`uppercase mb-2`}>{header}</Text>
-    <View style={tw`rounded-lg overflow-hidden bg-white`}>
+    <Text style={tw`uppercase mb-2 dark:text-gray-400`}>{header}</Text>
+    <View style={tw`rounded-lg overflow-hidden bg-white dark:bg-gray-700`}>
       {items.map((item, index) => (
         <View
           key={item.title}
           style={
-            index + 1 < items.length ? tw`border-b border-gray-200` : undefined
+            index + 1 < items.length
+              ? tw`border-b border-black/10 dark:border-white/10`
+              : undefined
           }
         >
           <TouchableHighlight
@@ -41,8 +43,8 @@ export const List = <T extends ListItem>({
           >
             <Text
               style={[
-                tw`text-lg font-medium`,
-                item.disabled ? tw`text-gray-300` : undefined,
+                tw`text-lg font-medium dark:text-white`,
+                item.disabled ? tw`opacity-25` : undefined,
               ]}
             >
               {item.title}
