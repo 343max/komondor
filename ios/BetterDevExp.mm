@@ -1,24 +1,41 @@
 #import "BetterDevExp.h"
 
 #import <React/RCTBundleURLProvider.h>
+#import <React/RCTReloadCommand.h>
+#import <React/RCTUtils.h>
 
 #ifdef RCT_NEW_ARCH_ENABLED
 #import "RNBetterDevExpSpec.h"
 #endif
 
+#if __has_include(<React/RCTDevMenu.h>)
+#import <React/RCTDevMenu.h>
+#endif
+
+#import "BDEBundleURLProvider.h"
+
+@interface BetterDevExp ()
+
+#if __has_include(<React/RCTDevMenu.h>)
+@property (strong, nonatomic) RCTDevMenuItem *resetBundleEndpoint;
+#endif
+
+@end
+
 @implementation BetterDevExp
+
 RCT_EXPORT_MODULE()
 
-// Example method
-// See // https://reactnative.dev/docs/native-modules-ios
-RCT_REMAP_METHOD(multiply,
-                 multiplyWithA:(double)a withB:(double)b
-                 withResolver:(RCTPromiseResolveBlock)resolve
-                 withRejecter:(RCTPromiseRejectBlock)reject)
+RCT_REMAP_METHOD(switchToPackager, switchToPackagerHost:(NSString *__nonnull)host
+                                                   port:(NSNumber *__nonnull)port
+                                                 scheme:(NSString *__nonnull)scheme
+                                           withResolver:(RCTPromiseResolveBlock)resolve
+                                           withRejecter:(RCTPromiseRejectBlock)reject)
 {
-  NSNumber *result = @(a * b);
-
-  resolve(result);
+    [[BDEBundleURLProvider sharedProvider] switchToPackagerHost:host
+                                                           port:port.unsignedIntegerValue
+                                                         scheme:scheme];
+    resolve(nil);
 }
 
 RCT_REMAP_METHOD(getUrlSchemes,
@@ -43,10 +60,12 @@ RCT_REMAP_METHOD(getUrlSchemes,
 }
 
 RCT_REMAP_METHOD(isPackagerRunning, isPackagerRunningOnHost:(NSString *)host
+                                                       port:(NSNumber *__nonnull)port
                                                      scheme:(NSString *)scheme
                                                withResolver:(RCTPromiseResolveBlock)resolve
                                                withRejecter:(RCTPromiseRejectBlock)reject) {
-    BOOL running = [RCTBundleURLProvider isPackagerRunning:host scheme:scheme];
+    BOOL running = [RCTBundleURLProvider isPackagerRunning:[NSString stringWithFormat:@"%@:%li", host, port.integerValue]
+                                                    scheme:scheme];
     resolve([NSNumber numberWithBool:running]);
 }
 

@@ -8,15 +8,15 @@ import {
 } from 'react-native';
 import { tw } from './tw';
 
-type Item = { title: string };
+export type ListItem = { title: string; disabled?: boolean };
 
-type ListProps<T extends Item> = {
+type ListProps<T extends ListItem> = {
   header: string;
   items: T[];
   onPress?: (item: T) => void;
 };
 
-export const List = <T extends Item>({
+export const List = <T extends ListItem>({
   header,
   items,
   onPress = () => {},
@@ -32,13 +32,21 @@ export const List = <T extends Item>({
           }
         >
           <TouchableHighlight
+            disabled={item.disabled}
             style={tw`p-2 min-h-[44px] pt-1.5`}
             onPress={() => {
               setTimeout(() => onPress(item), 50);
             }}
             underlayColor="#e4e4e7"
           >
-            <Text style={tw`text-lg font-medium`}>{item.title}</Text>
+            <Text
+              style={[
+                tw`text-lg font-medium`,
+                item.disabled ? tw`text-gray-300` : undefined,
+              ]}
+            >
+              {item.title}
+            </Text>
           </TouchableHighlight>
         </View>
       ))}

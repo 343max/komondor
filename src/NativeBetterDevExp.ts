@@ -3,7 +3,12 @@ import { TurboModuleRegistry } from 'react-native';
 
 export interface Spec extends TurboModule {
   getUrlSchemes(): Promise<string[]>;
-  isPackagerRunning(host: string, scheme: string | null): Promise<boolean>;
+  isPackagerRunning(
+    host: string,
+    port: number,
+    scheme: string
+  ): Promise<boolean>;
+  switchToPackager(host: string, port: number, scheme: string): Promise<void>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('BetterDevExp');

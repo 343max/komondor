@@ -14,6 +14,7 @@
 #import <React/RCTSurfacePresenterBridgeAdapter.h>
 #import <ReactCommon/RCTTurboModuleManager.h>
 #import <BetterDevExp/DHDevHelper.h>
+#import <BetterDevExp/BDEBundleURLProvider.h>
 
 #import <react/config/ReactNativeConfig.h>
 
@@ -78,7 +79,7 @@
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
 #if DEBUG
-  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
+  return [BDEBundleURLProvider sharedProvider].entryURL;
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif

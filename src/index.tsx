@@ -31,14 +31,26 @@ export type Bundle = {
 
 export const getAvailableLocalBundles = async (): Promise<Bundle[]> => [];
 
-export const switchToBundle = async (bundleUrl: string): Promise<void> => {
-  // dummy!
+const splitPort = (hostPort: string): { host: string; port: number } => {
+  const [host, port] = hostPort.split(':');
+  return { host: host ?? 'localhost', port: parseInt(port ?? '8081') ?? 8081 };
+};
+
+export const switchToPackager = async (
+  bundleHost: string,
+  scheme = 'http'
+): Promise<void> => {
+  const { host, port } = splitPort(bundleHost);
+  BetterDevExp.switchToPackager(host, port, scheme);
 };
 
 export const getUrlSchemes = async (): Promise<string[]> =>
   BetterDevExp.getUrlSchemes();
 
 export const isPackagerRunning = async (
-  host: string,
-  scheme?: string
-): Promise<boolean> => BetterDevExp.isPackagerRunning(host, scheme ?? null);
+  bundleHost: string,
+  scheme = 'http'
+): Promise<boolean> => {
+  const { host, port } = splitPort(bundleHost);
+  return await BetterDevExp.isPackagerRunning(host, port, scheme);
+};
