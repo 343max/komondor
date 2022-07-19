@@ -9,6 +9,8 @@ export interface Spec extends TurboModule {
     scheme: string
   ): Promise<boolean>;
   switchToPackager(host: string, port: number, scheme: string): Promise<void>;
+  hasNotSwitched(): Promise<boolean>;
+  isRunningOnDesktop(): Promise<boolean>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('BetterDevExp');

@@ -1,4 +1,5 @@
 import { NativeModules, Platform } from 'react-native';
+import type { Spec } from './NativeBetterDevExp';
 
 const LINKING_ERROR =
   `The package 'better-dev-exp' doesn't seem to be linked. Make sure: \n\n` +
@@ -13,7 +14,7 @@ const BetterDevExpModule = isTurboModuleEnabled
   ? require('./NativeBetterDevExp').default
   : NativeModules.BetterDevExp;
 
-const BetterDevExp = BetterDevExpModule
+const BetterDevExp: Spec = BetterDevExpModule
   ? BetterDevExpModule
   : new Proxy(
       {},
@@ -54,3 +55,8 @@ export const isPackagerRunning = async (
   const { host, port } = splitPort(bundleHost);
   return await BetterDevExp.isPackagerRunning(host, port, scheme);
 };
+
+export const hasNotSwitched = async () => await BetterDevExp.hasNotSwitched();
+
+export const isRunningOnDesktop = async () =>
+  await BetterDevExp.isRunningOnDesktop();
