@@ -13,6 +13,9 @@
 #endif
 
 #import "BDEBundleURLProvider.h"
+#import "DHDevHelper.h"
+
+static BOOL hasSwitched = NO;
 
 @interface BetterDevExp ()
 
@@ -32,6 +35,8 @@ RCT_REMAP_METHOD(switchToPackager, switchToPackagerHost:(NSString *__nonnull)hos
                                            withResolver:(RCTPromiseResolveBlock)resolve
                                            withRejecter:(RCTPromiseRejectBlock)reject)
 {
+    hasSwitched = YES;
+    
     [[BDEBundleURLProvider sharedProvider] switchToPackagerHost:host
                                                            port:port.unsignedIntegerValue
                                                          scheme:scheme];
@@ -67,6 +72,18 @@ RCT_REMAP_METHOD(isPackagerRunning, isPackagerRunningOnHost:(NSString *)host
     BOOL running = [RCTBundleURLProvider isPackagerRunning:[NSString stringWithFormat:@"%@:%li", host, port.integerValue]
                                                     scheme:scheme];
     resolve([NSNumber numberWithBool:running]);
+}
+
+RCT_REMAP_METHOD(hasNotSwitched, hasNotSwitchedWithResolver:(RCTPromiseResolveBlock)resolve
+                                               withRejecter:(RCTPromiseRejectBlock)reject)
+{
+    resolve([NSNumber numberWithBool:!hasSwitched]);
+}
+
+RCT_REMAP_METHOD(isRunningOnDesktop, isRunningOnDesktopWithResolver:(RCTPromiseResolveBlock)resolve
+                                                       withRejecter:(RCTPromiseRejectBlock)reject)
+{
+    resolve([NSNumber numberWithBool:[DHDevHelper isRunningOnMac]]);
 }
 
 #ifdef RCT_NEW_ARCH_ENABLED

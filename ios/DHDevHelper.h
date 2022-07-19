@@ -11,8 +11,11 @@ NS_ASSUME_NONNULL_BEGIN
 @interface DHDevHelper : NSObject
 
 + (nullable DHDevHelper *)sharedHelper;
++ (BOOL)isRunningOnMac;
 
-- (void)setupWithBridge:(RCTBridge *)bridge;
+- (void)setupDevHelper;
+
+- (void)setupDevMenuWithBridge:(RCTBridge *)bridge;
 
 - (void)buildMenuWithBuilder:(id<UIMenuBuilder>)builder NS_AVAILABLE_IOS(13.0);
 

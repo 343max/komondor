@@ -4,11 +4,12 @@
 
 #import "DHDevMenu.h"
 #import "DHMainWindowHandler.h"
+#import "BDEAppDelegateSwizzle.h"
+#import "BDEBundleURLProvider.h"
 
 @interface DHDevHelper ()
 
 @property (strong, nonatomic) DHDevMenu *devMenu;
-@property (weak, nonatomic, readonly) RCTBridge *bridge;
 
 @end
 
@@ -36,13 +37,18 @@
   }
 }
 
-- (void)setupWithBridge:(RCTBridge *)bridge
+- (void)setupDevHelper
 {
-  _bridge = bridge;
-  _devMenu = [[DHDevMenu alloc] initWithBridge:bridge];
-  _windowHandler = [[DHMainWindowHandler alloc] initWithFloatOnTop:self.floatOnTopSetting
-                                                   backgroundAlpha:self.backgroundAlpha
-                                           backgroundIgnoresClicks:self.backgroundIgnoresClicks];
+    [BDEBundleURLProvider swizzle];
+    [BDEAppDelegateSwizzle swizzle];
+}
+
+- (void)setupDevMenuWithBridge:(RCTBridge *)bridge
+{
+    _devMenu = [[DHDevMenu alloc] initWithBridge:bridge];
+    _windowHandler = [[DHMainWindowHandler alloc] initWithFloatOnTop:self.floatOnTopSetting
+                                                     backgroundAlpha:self.backgroundAlpha
+                                             backgroundIgnoresClicks:self.backgroundIgnoresClicks];
 }
 
 - (void)buildMenuWithBuilder:(id<UIMenuBuilder>)builder NS_AVAILABLE_IOS(13.0);

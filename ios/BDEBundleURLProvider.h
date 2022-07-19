@@ -37,6 +37,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface BDEBundleURLProvider : NSObject <BundleURLProvider>
 
++ (void)swizzle;
+   
 + (BDEBundleURLProvider *)sharedProvider;
 
 - (NSURL *)entryURL;

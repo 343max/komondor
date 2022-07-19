@@ -39,7 +39,7 @@
 
 @implementation BDEBundleURLProvider
 
-+ (void)load
++ (void)swizzle;
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{

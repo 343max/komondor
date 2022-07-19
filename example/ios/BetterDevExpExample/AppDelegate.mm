@@ -31,6 +31,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  [[DHDevHelper sharedHelper] setupDevHelper];
+  
   RCTAppSetupPrepareApp(application);
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
@@ -57,29 +59,15 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   
-  [[DHDevHelper sharedHelper] setupWithBridge:bridge];
+  [[DHDevHelper sharedHelper] setupDevMenuWithBridge:bridge];
 
   return YES;
-}
-
-- (void)buildMenuWithBuilder:(id<UIMenuBuilder>)builder
-{
-  [super buildMenuWithBuilder:builder];
-  
-  if (builder.system == [UIMenuSystem mainSystem]) {
-    [[DHDevHelper sharedHelper] buildMenuWithBuilder:builder];
-  }
-}
-
-- (UIResponder *)nextResponder
-{
-  return  [[DHDevHelper sharedHelper] nextResponderInsteadOfResponder:[super nextResponder]];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
 #if DEBUG
-  return [BDEBundleURLProvider sharedProvider].entryURL;
+  return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 #else
   return [[NSBundle mainBundle] URLForResource:@"main" withExtension:@"jsbundle"];
 #endif
