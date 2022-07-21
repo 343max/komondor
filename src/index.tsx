@@ -60,3 +60,8 @@ export const hasNotSwitched = async () => await BetterDevExp.hasNotSwitched();
 
 export const isRunningOnDesktop = async () =>
   await BetterDevExp.isRunningOnDesktop();
+
+export const getOpenURLQueue = async () => await BetterDevExp.getOpenURLQueue();
+
+export const flushOpenURLQueue = async () =>
+  await BetterDevExp.flushOpenURLQueue();

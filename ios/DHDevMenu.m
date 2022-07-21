@@ -1,7 +1,7 @@
 #import "DHDevMenu.h"
 
 #import "DHDevHelper.h"
-#import "NSArray+Map.h"
+#import "array_map.h"
 #import "DHMainWindowHandler.h"
 
 #import <React/RCTBridge.h>
@@ -183,7 +183,7 @@
                                             modifierFlags:UIKeyModifierCommand | UIKeyModifierControl
                                              propertyList:nil];
   
-  NSArray *devMenuItems = [[[DHDevMenu devMenuItemsForBridge:_bridge] mapObjectsUsingBlock:^id _Nonnull(RCTDevMenuItem *item, NSUInteger idx) {
+  NSArray *devMenuItems = array_map([DHDevMenu devMenuItemsForBridge:_bridge], ^id _Nonnull(RCTDevMenuItem *item, NSUInteger idx) {
     NSString *keyEquivalent = nil;
     NSString *title = [item title];
     if ([title isEqualToString:@"Reload"]) {
@@ -208,7 +208,7 @@
                               modifierFlags:UIKeyModifierCommand
                                propertyList:nil];
     }
-  }] mutableCopy] ;
+  }).mutableCopy ;
   
   UIMenu *resizeMenu = [UIMenu menuWithTitle:@"Resize"
                                     children:@[

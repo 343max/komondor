@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { SafeAreaView, ScrollView, Share, Switch } from 'react-native';
+import { Alert, SafeAreaView, ScrollView, Share } from 'react-native';
 import { switchToPackager } from 'better-dev-exp';
 import { List, ListItem } from './List';
 import { tw } from './tw';
@@ -10,18 +10,25 @@ import { WaitForPackager } from './WaitForPackager';
 import { useUrlSchemes } from './lib/useUrlSchemes';
 import { useIsInitialRun } from './lib/useIsInitialRun';
 import { StarButton } from './StarButton';
+import { useHandleUrl } from './lib/useHandleUrl';
 
 export default function App() {
   useDeviceContext(tw);
 
+  const handleUrl = useHandleUrl();
   const urlSchemes = useUrlSchemes();
   const isInitialRun = useIsInitialRun();
+
+  React.useEffect(() => {
+    if (handleUrl !== undefined) {
+      Alert.alert(handleUrl);
+    }
+  }, [handleUrl]);
 
   const [starredPackagers, setStarredPackagers] = React.useState<string[]>([]);
 
   const [allPackagers, setAllPackagers] = React.useState<string[]>([
     'localhost:8088',
-    'localhost:8087',
   ]);
 
   const runningPackagers = useRunningPackagers(allPackagers);

@@ -14,6 +14,8 @@
 
 #import "BDEBundleURLProvider.h"
 #import "DHDevHelper.h"
+#import "BDEOpenURLQueue.h"
+#import "array_map.h"
 
 static BOOL hasSwitched = NO;
 
@@ -84,6 +86,19 @@ RCT_REMAP_METHOD(isRunningOnDesktop, isRunningOnDesktopWithResolver:(RCTPromiseR
                                                        withRejecter:(RCTPromiseRejectBlock)reject)
 {
     resolve([NSNumber numberWithBool:[DHDevHelper isRunningOnMac]]);
+}
+
+RCT_REMAP_METHOD(getOpenURLQueue, getOpenURLQueueWithResolver:(RCTPromiseResolveBlock)resolve
+                                                 withRejecter:(RCTPromiseRejectBlock)reject)
+{
+    resolve(BDEOpenURLQueue.sharedQueue.stringQueue);
+}
+
+RCT_REMAP_METHOD(flushOpenURLQueue, flushOpenURLQueueWithResolver:(RCTPromiseResolveBlock)resolve
+                                                     withRejecter:(RCTPromiseRejectBlock)reject)
+{
+    [BDEOpenURLQueue.sharedQueue flush];    
+    resolve(nil);
 }
 
 #ifdef RCT_NEW_ARCH_ENABLED

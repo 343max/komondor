@@ -41,11 +41,15 @@ NS_ASSUME_NONNULL_BEGIN
    
 + (BDEBundleURLProvider *)sharedProvider;
 
+@property (nonatomic, readonly) BOOL showsInternalPicker;
+
 - (NSURL *)entryURL;
 
 - (void)switchToPackagerHost:(NSString *)host port:(NSUInteger)port scheme:(NSString *)scheme;
 - (void)switchToBundle:(NSURL *)bundle;
 - (void)switchToInternalPicker;
+
+- (void)withInternalPicker:(void (^)(void))afterLoadingBlock;
 
 @end
 

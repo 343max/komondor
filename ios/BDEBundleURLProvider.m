@@ -187,6 +187,11 @@
     [self reloadWithBundleURL:url];
 }
 
+- (BOOL)showsInternalPicker
+{
+    return [_host isEqualToString:@"localhost"] && _port == 8081 && [_scheme isEqualToString:@"http"];
+}
+
 - (void)configureInternalPicker
 {
     _host = @"localhost";

@@ -1,10 +1,8 @@
-//
-
 #import "DHDevHelper.h"
 
 #import "DHDevMenu.h"
 #import "DHMainWindowHandler.h"
-#import "BDEAppDelegateSwizzle.h"
+#import "BDEAppDelegate.h"
 #import "BDEBundleURLProvider.h"
 
 @interface DHDevHelper ()
@@ -40,7 +38,6 @@
 - (void)setupDevHelper
 {
     [BDEBundleURLProvider swizzle];
-    [BDEAppDelegateSwizzle swizzle];
 }
 
 - (void)setupDevMenuWithBridge:(RCTBridge *)bridge
