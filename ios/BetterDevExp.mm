@@ -91,14 +91,35 @@ RCT_REMAP_METHOD(isRunningOnDesktop, isRunningOnDesktopWithResolver:(RCTPromiseR
 RCT_REMAP_METHOD(getOpenURLQueue, getOpenURLQueueWithResolver:(RCTPromiseResolveBlock)resolve
                                                  withRejecter:(RCTPromiseRejectBlock)reject)
 {
-    resolve(BDEOpenURLQueue.sharedQueue.stringQueue);
+    NSArray *queue = BDEOpenURLQueue.sharedQueue.stringQueue;
+    [BDEOpenURLQueue.sharedQueue flush];
+    resolve(queue);
 }
 
-RCT_REMAP_METHOD(flushOpenURLQueue, flushOpenURLQueueWithResolver:(RCTPromiseResolveBlock)resolve
-                                                     withRejecter:(RCTPromiseRejectBlock)reject)
+- (void)startObserving
 {
-    [BDEOpenURLQueue.sharedQueue flush];    
-    resolve(nil);
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleEventListener:)
+                                                 name:BDEOpenURLQueueChangeNotification
+                                               object:nil];
+}
+
+- (void)stopObserving
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                    name:BDEOpenURLQueueChangeNotification
+                                                  object:nil];
+}
+
+- (NSArray<NSString *> *)supportedEvents
+{
+    return @[@"queueAdded"];
+}
+
+- (void)handleEventListener:(NSNotification *)notification
+{
+    [self sendEventWithName:notification.userInfo[@"type"]
+                       body:notification.userInfo[@"body"]];
 }
 
 #ifdef RCT_NEW_ARCH_ENABLED

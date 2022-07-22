@@ -2,6 +2,8 @@
 
 #import "array_map.h"
 
+NSString *const BDEOpenURLQueueChangeNotification = @"BDEOpenURLQueueChangeNotification";
+
 @implementation BDEOpenURLQueue
 
 + (instancetype)sharedQueue
@@ -28,6 +30,12 @@
 - (void)add:(NSURL *)url
 {
     _queue = [_queue arrayByAddingObject:url];
+    [[NSNotificationCenter defaultCenter] postNotificationName:BDEOpenURLQueueChangeNotification
+                                                        object:self
+                                                      userInfo:@{
+        @"type": @"queueAdded",
+        @"body": @{ @"url": url.absoluteString }
+    }];
 }
 
 - (void)flush

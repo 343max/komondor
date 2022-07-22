@@ -1,7 +1,8 @@
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
 #import "BDEAppDelegate.h"
 
-@interface BetterDevExp : NSObject <RCTBridgeModule>
+@interface BetterDevExp : RCTEventEmitter <RCTBridgeModule>
 
 @end

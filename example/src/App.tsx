@@ -15,7 +15,9 @@ import { useHandleUrl } from './lib/useHandleUrl';
 export default function App() {
   useDeviceContext(tw);
 
-  const handleUrl = useHandleUrl();
+  const handleUrl = useHandleUrl((url) => {
+    Alert.alert(url);
+  });
   const urlSchemes = useUrlSchemes();
   const isInitialRun = useIsInitialRun();
 

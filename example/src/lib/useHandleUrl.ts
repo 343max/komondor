@@ -1,20 +1,17 @@
+import { addEventListener, getOpenURLQueue } from 'better-dev-exp';
 import React from 'react';
-import { useOpenUrlListener } from './useOpenUrlListener';
-import { useOpenURLQueue } from './useOpenURLQueue';
+import { useAsyncEffect } from './useAsyncEffect';
 
 export const useHandleUrl = (handler: (url: string) => void) => {
-  const openUrl = useOpenUrlListener();
-  const queuedUrls = useOpenURLQueue();
+  useAsyncEffect(async () => {
+    (await getOpenURLQueue()).forEach((url) => handler(url));
+  }, []);
 
   React.useEffect(() => {
-    if (openUrl !== undefined) {
-      handler(openUrl);
-    }
-  }, [openUrl]);
+    const subscription = addEventListener('queueAdded', ({ url }) =>
+      handler(url)
+    );
 
-  React.useEffect(() => {
-    if (queuedUrls.length > 0) {
-      handler(queuedUrls[0]!);
-    }
-  }, [queuedUrls]);
+    return () => subscription.remove();
+  }, []);
 };

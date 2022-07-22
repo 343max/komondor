@@ -2,6 +2,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+extern NSString *const BDEOpenURLQueueChangeNotification;
+
 @interface BDEOpenURLQueue : NSObject
 
 + (instancetype)sharedQueue;

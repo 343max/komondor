@@ -12,7 +12,6 @@ export interface Spec extends TurboModule {
   hasNotSwitched(): Promise<boolean>;
   isRunningOnDesktop(): Promise<boolean>;
   getOpenURLQueue(): Promise<string[]>;
-  flushOpenURLQueue(): Promise<void>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('BetterDevExp');

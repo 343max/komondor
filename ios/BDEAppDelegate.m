@@ -61,7 +61,7 @@ extern int BDEApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
 {
     if ([url.host isEqualToString:@"bde"]) {
         if (BDEBundleURLProvider.sharedProvider.showsInternalPicker) {
-            [RCTLinkingManager application:application openURL:url options:options];
+            [BDEOpenURLQueue.sharedQueue add:url];
         } else {
             [BDEOpenURLQueue.sharedQueue add:url];
             [BDEBundleURLProvider.sharedProvider switchToInternalPicker];
@@ -73,7 +73,6 @@ extern int BDEApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
         return NO;
     }
 }
-
 
 - (void)swizzled_buildMenuWithBuilder:(id<UIMenuBuilder>)builder API_AVAILABLE(ios(13.0))
 {

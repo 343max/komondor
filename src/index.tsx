@@ -1,4 +1,9 @@
-import { NativeModules, Platform } from 'react-native';
+import {
+  EmitterSubscription,
+  NativeEventEmitter,
+  NativeModules,
+  Platform,
+} from 'react-native';
 import type { Spec } from './NativeBetterDevExp';
 
 const LINKING_ERROR =
@@ -13,6 +18,8 @@ const isTurboModuleEnabled = global.__turboModuleProxy != null;
 const BetterDevExpModule = isTurboModuleEnabled
   ? require('./NativeBetterDevExp').default
   : NativeModules.BetterDevExp;
+
+const EventEmitter = new NativeEventEmitter(NativeModules.BetterDevExp);
 
 const BetterDevExp: Spec = BetterDevExpModule
   ? BetterDevExpModule
@@ -65,3 +72,10 @@ export const getOpenURLQueue = async () => await BetterDevExp.getOpenURLQueue();
 
 export const flushOpenURLQueue = async () =>
   await BetterDevExp.flushOpenURLQueue();
+
+export function addEventListener(
+  type: 'queueAdded',
+  handler: (event: { url: string }) => void
+): EmitterSubscription {
+  return EventEmitter.addListener(type, handler);
+}
