@@ -60,7 +60,7 @@ export default function App() {
         };
       })
     );
-  }, [allPackagers, runningPackagers]);
+  }, [allPackagers, runningPackagers, starredPackagers]);
 
   return (
     <SafeAreaView style={tw`bg-slate-200 dark:bg-slate-700`}>

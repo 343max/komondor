@@ -41,7 +41,10 @@ export const getAvailableLocalBundles = async (): Promise<Bundle[]> => [];
 
 const splitPort = (hostPort: string): { host: string; port: number } => {
   const [host, port] = hostPort.split(':');
-  return { host: host ?? 'localhost', port: parseInt(port ?? '8081') ?? 8081 };
+  return {
+    host: host ?? 'localhost',
+    port: parseInt(port ?? '8081', 10) ?? 8081,
+  };
 };
 
 export const switchToPackager = async (
