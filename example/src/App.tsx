@@ -16,7 +16,7 @@ import { StarButton } from './StarButton';
 import { useHandleUrl } from './lib/useHandleUrl';
 import { parseAppUrl } from './lib/parseAppUrl';
 import { useAsyncMemo } from './lib/useAsyncMemo';
-import { useRecentPackagers } from './lib/useRecentPackagers';
+import { useKnownPackagers } from './lib/useKnownPackagers';
 import { useAsyncEffect } from './lib/useAsyncEffect';
 
 export default function App() {
@@ -36,17 +36,21 @@ export default function App() {
   const isDevMachine = useAsyncMemo(supportsLocalDevelopment, [], false);
   const isInitialRun = useAsyncMemo(hasNotSwitched, [], false);
 
-  const [starredPackagers, setStarredPackagers] = React.useState<string[]>([]);
+  const {
+    recentPackagers,
+    addRecentPackager,
+    favoritePackagers,
+    toggleFavoritePackager,
+  } = useKnownPackagers();
 
   const watchedPackagers = React.useMemo(
     () => [
-      ...(isDevMachine ? ['localhost:8080'] : []),
-      ...(isInitialRun ? starredPackagers : []),
+      ...(isInitialRun && isDevMachine ? ['localhost:8080'] : []),
+      ...(isInitialRun ? favoritePackagers : []),
       ...(requestedPackager ? [requestedPackager] : []),
     ],
-    [isDevMachine, isInitialRun, starredPackagers, requestedPackager]
+    [isDevMachine, isInitialRun, favoritePackagers, requestedPackager]
   );
-  const { recentPackagers, addRecentPackager } = useRecentPackagers();
 
   const runningPackagers = useRunningPackagers([
     ...watchedPackagers,
@@ -75,20 +79,19 @@ export default function App() {
           disabled: !running,
           accessoryItem: (
             <StarButton
-              starred={starredPackagers.includes(host)}
+              starred={favoritePackagers.includes(host)}
               style={tw`mr-2`}
-              onPress={() =>
-                setStarredPackagers(
-                  starredPackagers.includes(host)
-                    ? starredPackagers.filter((v) => v !== host)
-                    : [...starredPackagers, host]
-                )
-              }
+              onPress={() => toggleFavoritePackager(host)}
             />
           ),
         };
       }),
-    [recentPackagers, runningPackagers, starredPackagers]
+    [
+      recentPackagers,
+      runningPackagers,
+      favoritePackagers,
+      toggleFavoritePackager,
+    ]
   );
 
   return (
