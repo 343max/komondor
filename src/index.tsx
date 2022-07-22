@@ -70,9 +70,6 @@ export const isRunningOnDesktop = async () =>
 
 export const getOpenURLQueue = async () => await BetterDevExp.getOpenURLQueue();
 
-export const flushOpenURLQueue = async () =>
-  await BetterDevExp.flushOpenURLQueue();
-
 export function addEventListener(
   type: 'queueAdded',
   handler: (event: { url: string }) => void
