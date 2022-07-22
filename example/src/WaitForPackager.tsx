@@ -25,7 +25,7 @@ export const WaitForPackager: React.FC = () => {
             style={tw`dark:text-white w-[${textWidth}px]`}
             onLayout={({ nativeEvent }) => setTextOffset(nativeEvent.layout.x)}
           >
-            Will connect to first starred packager coming online...
+            Waiting for packager to come online...
           </Text>
         </View>
       </View>

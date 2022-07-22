@@ -88,6 +88,37 @@ RCT_REMAP_METHOD(isRunningOnDesktop, isRunningOnDesktopWithResolver:(RCTPromiseR
     resolve([NSNumber numberWithBool:[DHDevHelper isRunningOnMac]]);
 }
 
+RCT_REMAP_METHOD(storeDefaults, storeDefaultsKey:(NSString *)key
+                                           value:(NSString *)value
+                                    withResolver:(RCTPromiseResolveBlock)resolve
+                                    withRejecter:(RCTPromiseRejectBlock)reject)
+{
+    [[NSUserDefaults standardUserDefaults] setObject:value forKey:[NSString stringWithFormat:@"BDE_%@", key]];
+    resolve(nil);
+}
+
+RCT_REMAP_METHOD(loadDefaults, loadDefaultsKey:(NSString *)key
+                                  withResolver:(RCTPromiseResolveBlock)resolve
+                                  withRejecter:(RCTPromiseRejectBlock)reject)
+{
+    NSString *value = [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"BDE_%@", key]];
+    if ([value isKindOfClass:[NSString class]]) {
+        resolve(value);
+    } else {
+        resolve(nil);
+    }
+}
+
+RCT_REMAP_METHOD(supportsLocalDevelopment, supportsLocalDevelopmentWithResolver:(RCTPromiseResolveBlock)resolve
+                                                                   withRejecter:(RCTPromiseRejectBlock)reject)
+{
+#if TARGET_OS_SIMULATOR
+    resolve([NSNumber numberWithBool:YES]);
+#else
+    resolve([NSNumber numberWithBool:[DHDevHelper isRunningOnMac]]);
+#endif
+}
+
 RCT_REMAP_METHOD(getOpenURLQueue, getOpenURLQueueWithResolver:(RCTPromiseResolveBlock)resolve
                                                  withRejecter:(RCTPromiseRejectBlock)reject)
 {
@@ -118,6 +149,7 @@ RCT_REMAP_METHOD(getOpenURLQueue, getOpenURLQueueWithResolver:(RCTPromiseResolve
 
 - (void)handleEventListener:(NSNotification *)notification
 {
+    [BDEOpenURLQueue.sharedQueue flush];
     [self sendEventWithName:notification.userInfo[@"type"]
                        body:notification.userInfo[@"body"]];
 }

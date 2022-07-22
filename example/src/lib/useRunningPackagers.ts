@@ -8,7 +8,7 @@ export const useRunningPackagers = (packagers: string[]): string[] => {
   useInterval(async () => {
     const r = (
       await Promise.all(
-        packagers.map(async (host) => {
+        [...new Set(packagers)].map(async (host) => {
           const isRunning = await isPackagerRunning(host);
           return isRunning ? host : null;
         })

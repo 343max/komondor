@@ -8,16 +8,14 @@
 #import <React/RCTDevMenu.h>
 #endif
 
-
+#import "DHDevHelper.h"
 #import "Swizzle.h"
 
 @interface BDEBundleURLProvider ()
 
 @property (strong, nonatomic) RCTBundleURLProvider *originalProvider;
 
-@property (strong, nonatomic) NSString *host;
-@property (assign, nonatomic) NSUInteger port;
-@property (strong, nonatomic) NSString *scheme;
+@property (strong, nonatomic) NSURL *packagerURL;
 
 #if __has_include(<React/RCTDevMenu.h>)
 @property (strong, nonatomic) RCTDevMenuItem *resetBundleEndpointMenuItem;
@@ -108,7 +106,7 @@
 
 - (NSString *)packagerScheme
 {
-    return _scheme;
+    return _packagerURL.scheme;
 }
 
 - (nonnull NSURL *)jsBundleURLForBundleRoot:(nonnull NSString *)bundleRoot {
@@ -132,7 +130,7 @@
 }
 
 - (nonnull NSString *)packagerServerHostPort {
-    return [self packagerServerHost:_host port:_port];
+    return [self packagerServerHost:_packagerURL.host port:_packagerURL.port.unsignedIntegerValue];
 }
 
 - (nonnull NSString *)packagerServerHost:(NSString *)host port:(NSUInteger)port
@@ -161,9 +159,7 @@
 
 - (void)switchToPackagerHost:(NSString *)host port:(NSUInteger)port scheme:(NSString *)scheme
 {
-    _host = host;
-    _port = port;
-    _scheme = scheme;
+    _packagerURL = [NSURL URLWithString:[NSString stringWithFormat:@"%@://%@:%lu/", scheme, host, port]];
     NSURL *url = [RCTBundleURLProvider jsBundleURLForBundleRoot:@"index"
                                                    packagerHost:[self packagerServerHost:host port:port]
                                                  packagerScheme:scheme
@@ -179,7 +175,7 @@
     [self configureInternalPicker];
     NSURL *url = [RCTBundleURLProvider jsBundleURLForBundleRoot:@"index"
                                                    packagerHost:[self packagerServerHostPort]
-                                                 packagerScheme:[self scheme]
+                                                 packagerScheme:_packagerURL.scheme
                                                       enableDev:YES
                                              enableMinification:NO
                                                     modulesOnly:NO
@@ -187,16 +183,47 @@
     [self reloadWithBundleURL:url];
 }
 
+- (NSString *)guessPackagerHost
+{
+#if TARGET_OS_SIMULATOR
+    return @"localhost"
+#else
+    if ([DHDevHelper isRunningOnMac]) {
+        return @"localhost";
+    } else {
+        static NSString *ipGuess;
+        static dispatch_once_t onceToken;
+        dispatch_once(&onceToken, ^{
+            NSString *ipPath = [[NSBundle mainBundle] pathForResource:@"ip" ofType:@"txt"];
+            ipGuess =
+            [[NSString stringWithContentsOfFile:ipPath encoding:NSUTF8StringEncoding
+                                          error:nil] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
+        });
+        
+        NSString *host = ipGuess ?: @"localhost";
+        return host;
+    }
+#endif
+}
+
+- (NSURL *)pickerDevelopementUrl
+{
+    return [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:8081/", [self guessPackagerHost]]];
+}
+
+- (NSURL *)pickerBundleUrl
+{
+    return [self pickerDevelopementUrl];
+}
+
 - (BOOL)showsInternalPicker
 {
-    return [_host isEqualToString:@"localhost"] && _port == 8081 && [_scheme isEqualToString:@"http"];
+    return [_packagerURL isEqual:[self pickerBundleUrl]];
 }
 
 - (void)configureInternalPicker
 {
-    _host = @"localhost";
-    _port = 8081;
-    _scheme = @"http";
+    _packagerURL = [self pickerBundleUrl];
 }
 
 - (void)reloadWithBundleURL:(NSURL *)bundleURL

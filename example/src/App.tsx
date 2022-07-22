@@ -1,45 +1,74 @@
 import * as React from 'react';
 
-import { Alert, SafeAreaView, ScrollView, Share } from 'react-native';
-import { switchToPackager } from 'better-dev-exp';
-import { List, ListItem } from './List';
+import { SafeAreaView, ScrollView, Share } from 'react-native';
+import {
+  getUrlSchemes,
+  hasNotSwitched,
+  supportsLocalDevelopment,
+  switchToPackager,
+} from 'better-dev-exp';
+import { List } from './List';
 import { tw } from './tw';
 import { useRunningPackagers } from './lib/useRunningPackagers';
 import { useDeviceContext } from 'twrnc';
 import { WaitForPackager } from './WaitForPackager';
-import { useUrlSchemes } from './lib/useUrlSchemes';
-import { useIsInitialRun } from './lib/useIsInitialRun';
 import { StarButton } from './StarButton';
 import { useHandleUrl } from './lib/useHandleUrl';
+import { parseAppUrl } from './lib/parseAppUrl';
+import { useAsyncMemo } from './lib/useAsyncMemo';
+import { useRecentPackagers } from './lib/useRecentPackagers';
+import { useAsyncEffect } from './lib/useAsyncEffect';
 
 export default function App() {
   useDeviceContext(tw);
 
-  const handleUrl = useHandleUrl((url) => {
-    Alert.alert(url);
-  });
-  const urlSchemes = useUrlSchemes();
-  const isInitialRun = useIsInitialRun();
+  const [requestedPackager, setRequestedPackager] = React.useState<string>();
 
-  React.useEffect(() => {
-    if (handleUrl !== undefined) {
-      Alert.alert(handleUrl);
+  useHandleUrl((url) => {
+    const urlAction = parseAppUrl(url);
+
+    if (urlAction?.action === 'switch-to-host') {
+      setRequestedPackager(urlAction.host);
     }
-  }, [handleUrl]);
+  });
+
+  const urlSchemes = useAsyncMemo(getUrlSchemes, [], []);
+  const isDevMachine = useAsyncMemo(supportsLocalDevelopment, [], false);
+  const isInitialRun = useAsyncMemo(hasNotSwitched, [], false);
 
   const [starredPackagers, setStarredPackagers] = React.useState<string[]>([]);
 
-  const [allPackagers, setAllPackagers] = React.useState<string[]>([
-    'localhost:8088',
+  const watchedPackagers = React.useMemo(
+    () => [
+      ...(isDevMachine ? ['localhost:8080'] : []),
+      ...(isInitialRun ? starredPackagers : []),
+      ...(requestedPackager ? [requestedPackager] : []),
+    ],
+    [isDevMachine, isInitialRun, starredPackagers, requestedPackager]
+  );
+  const { recentPackagers, addRecentPackager } = useRecentPackagers();
+
+  const runningPackagers = useRunningPackagers([
+    ...watchedPackagers,
+    ...recentPackagers,
   ]);
 
-  const runningPackagers = useRunningPackagers(allPackagers);
+  useAsyncEffect(async () => {
+    const pickedPackager = runningPackagers.find((p) =>
+      watchedPackagers.includes(p)
+    );
 
-  const [packagers, setPackagers] = React.useState<ListItem[]>([]);
+    if (pickedPackager !== undefined) {
+      await addRecentPackager(pickedPackager);
+      switchToPackager(pickedPackager).catch((exception) =>
+        console.log(exception)
+      );
+    }
+  }, [runningPackagers, watchedPackagers]);
 
-  React.useEffect(() => {
-    setPackagers(
-      allPackagers.map((host) => {
+  const packagerItems = React.useMemo(
+    () =>
+      recentPackagers.map((host) => {
         const running = runningPackagers.includes(host);
         return {
           title: host,
@@ -58,22 +87,22 @@ export default function App() {
             />
           ),
         };
-      })
-    );
-  }, [allPackagers, runningPackagers, starredPackagers]);
+      }),
+    [recentPackagers, runningPackagers, starredPackagers]
+  );
 
   return (
     <SafeAreaView style={tw`bg-slate-200 dark:bg-slate-700`}>
       <ScrollView style={tw`w-full h-full p-3 `}>
-        {isInitialRun && starredPackagers.length > 0 ? (
-          <WaitForPackager />
-        ) : null}
+        {watchedPackagers.length > 0 ? <WaitForPackager /> : null}
         <List
           header="Recent Dev Endpoints"
-          items={packagers}
-          onPress={({ title }) =>
-            switchToPackager(title).catch((exception) => console.log(exception))
-          }
+          items={packagerItems}
+          onPress={({ title }) => {
+            switchToPackager(title).catch((exception) =>
+              console.log(exception)
+            );
+          }}
         />
         <List
           header="URL Schemes"

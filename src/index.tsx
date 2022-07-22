@@ -71,7 +71,18 @@ export const hasNotSwitched = async () => await BetterDevExp.hasNotSwitched();
 export const isRunningOnDesktop = async () =>
   await BetterDevExp.isRunningOnDesktop();
 
+export const supportsLocalDevelopment = async () =>
+  await BetterDevExp.supportsLocalDevelopment();
+
 export const getOpenURLQueue = async () => await BetterDevExp.getOpenURLQueue();
+
+export const storeDefaults = async (
+  key: string,
+  value: string
+): Promise<void> => await BetterDevExp.storeDefaults(key, value);
+
+export const loadDefaults = async (key: string): Promise<undefined | string> =>
+  await BetterDevExp.loadDefaults(key);
 
 export function addEventListener(
   type: 'queueAdded',

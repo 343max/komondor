@@ -49,8 +49,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)switchToBundle:(NSURL *)bundle;
 - (void)switchToInternalPicker;
 
-- (void)withInternalPicker:(void (^)(void))afterLoadingBlock;
-
 @end
 
 NS_ASSUME_NONNULL_END
