@@ -29,6 +29,15 @@ static BOOL hasSwitched = NO;
 
 @implementation BetterDevExp
 
+@synthesize bridge = _bridge;
+
+- (void)setBridge:(RCTBridge *)bridge
+{
+    _bridge = bridge;
+    
+    [[DHDevHelper sharedHelper] setupDevMenuWithBridge:bridge];
+}
+
 RCT_EXPORT_MODULE()
 
 RCT_REMAP_METHOD(switchToPackager, switchToPackagerHost:(NSString *__nonnull)host

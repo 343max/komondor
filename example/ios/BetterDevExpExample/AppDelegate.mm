@@ -59,8 +59,6 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
   
-  [[DHDevHelper sharedHelper] setupDevMenuWithBridge:bridge];
-
   return YES;
 }
 

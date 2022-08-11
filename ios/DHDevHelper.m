@@ -46,6 +46,7 @@
     _windowHandler = [[DHMainWindowHandler alloc] initWithFloatOnTop:self.floatOnTopSetting
                                                      backgroundAlpha:self.backgroundAlpha
                                              backgroundIgnoresClicks:self.backgroundIgnoresClicks];
+    [[UIMenuSystem mainSystem] setNeedsRebuild];
 }
 
 - (void)buildMenuWithBuilder:(id<UIMenuBuilder>)builder NS_AVAILABLE_IOS(13.0);
