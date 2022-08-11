@@ -45,7 +45,7 @@ export default function App() {
 
   const watchedPackagers = React.useMemo(
     () => [
-      ...(isInitialRun && isDevMachine ? ['localhost:8080'] : []),
+      ...(isInitialRun && isDevMachine ? ['localhost:8081'] : []),
       ...(isInitialRun ? favoritePackagers : []),
       ...(requestedPackager ? [requestedPackager] : []),
     ],

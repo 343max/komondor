@@ -208,7 +208,7 @@
 
 - (NSURL *)pickerDevelopementUrl
 {
-    return [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:8081/", [self guessPackagerHost]]];
+    return [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:8042/", [self guessPackagerHost]]];
 }
 
 - (NSURL *)pickerBundleUrl
