@@ -21,6 +21,7 @@ extern int BDEApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
 {
 #if DEBUG
     [BDEAppDelegate swizzle:delegateClassName];
+    [[DHDevHelper sharedHelper] setupDevHelper];
 #endif
     return UIApplicationMain(argc, argv, principalClassName, delegateClassName);
 }

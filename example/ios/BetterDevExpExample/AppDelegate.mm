@@ -13,8 +13,6 @@
 #import <React/RCTSurfacePresenter.h>
 #import <React/RCTSurfacePresenterBridgeAdapter.h>
 #import <ReactCommon/RCTTurboModuleManager.h>
-#import <BetterDevExp/DHDevHelper.h>
-#import <BetterDevExp/BDEBundleURLProvider.h>
 
 #import <react/config/ReactNativeConfig.h>
 
@@ -31,8 +29,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-  [[DHDevHelper sharedHelper] setupDevHelper];
-  
   RCTAppSetupPrepareApp(application);
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
