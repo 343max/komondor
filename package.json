@@ -25,16 +25,24 @@
     "test": "jest",
     "typescript": "tsc --noEmit",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "prepare": "bob build",
+    "build:bin": "tsc -b tsconfig.bin.json --force",
+    "build:rn": "bob build",
+    "prepare": "yarn build:bin && yarn build:rn",
     "release": "release-it",
     "example": "yarn --cwd example",
-    "bootstrap": "yarn example && yarn && yarn example pods"
+    "bootstrap": "yarn example && yarn && yarn example pods",
+    "try-bde-patch": "yarn build:bin && cd ../HelloBDE && npm run patch",
+    "hello-bde-pod": "cd ../HelloBDE/ios && pod install",
+    "try-pod-bde-patch": "yarn hello-bde-pod && yarn build:bin && cd ../HelloBDE && npm run patch"
   },
   "keywords": [
     "react-native",
     "ios",
     "android"
   ],
+  "bin": {
+    "bde-patch": "dist/bin/bde-patch.js"
+  },
   "repository": "https://github.com/343max/better-dev-exp",
   "author": "Max von Webel <max@343max.de> (https://github.com/343max)",
   "license": "MIT",
@@ -57,6 +65,8 @@
     "eslint": "^8.4.1",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "glob": "^8.0.3",
+    "glob-promise": "^5.0.0",
     "jest": "^28.1.1",
     "pod-install": "^0.1.0",
     "prettier": "^2.0.5",
