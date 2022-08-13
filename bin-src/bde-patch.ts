@@ -3,8 +3,8 @@
 import { promise as glob } from 'glob-promise';
 import { open } from 'fs/promises';
 
-const patchConfiguration = 'release';
-const baseConfiguration = 'debug';
+const releaseConfiguration = 'release';
+const debugConfiguration = 'debug';
 const command = process.argv.join(' ');
 
 const readFile = async (path: string): Promise<string> => {
@@ -21,42 +21,57 @@ const matchingLine = (
 
 const main = async () => {
   const configs = await glob(
-    `ios/Pods/Target Support Files/*/*.${patchConfiguration}.xcconfig`
+    `ios/Pods/Target Support Files/*/*.${releaseConfiguration}.xcconfig`
   );
 
   const patchComment = `// patched in by ${command}. Revert by running pod install again`;
 
-  for (const configPath of configs) {
-    const content = await readFile(configPath);
-    const baseContent = await readFile(
-      configPath.replace(
-        `${patchConfiguration}.xcconfig`,
-        `${baseConfiguration}.xcconfig`
+  for (const releaseConfigPath of configs) {
+    const releaseContent = await readFile(releaseConfigPath);
+    const debugContent = await readFile(
+      releaseConfigPath.replace(
+        `${releaseConfiguration}.xcconfig`,
+        `${debugConfiguration}.xcconfig`
       )
     );
 
-    const preprocessorDefinitions = matchingLine(
-      baseContent,
+    const debugPreprocessorDefinitions = matchingLine(
+      debugContent,
       /^GCC_PREPROCESSOR_DEFINITIONS/
     );
 
-    if (content.includes(patchComment)) {
-      console.log(`${configPath} already patched, skipping`);
+    const releasePreprocessorDefinitions = matchingLine(
+      releaseContent,
+      /^GCC_PREPROCESSOR_DEFINITIONS/
+    );
+
+    const sonarKitEnabled = debugPreprocessorDefinitions?.includes(
+      'FB_SONARKIT_ENABLED=1'
+    );
+
+    const preprocessoerDefinitions = [
+      releasePreprocessorDefinitions,
+      'DEBUG=1',
+      ...(sonarKitEnabled ? ['FB_SONARKIT_ENABLED=1'] : []),
+    ].join(' ');
+
+    if (releaseContent.includes(patchComment)) {
+      console.log(`${releaseConfigPath} already patched, skipping`);
     } else {
-      const fw = await open(configPath, 'w');
+      const fw = await open(releaseConfigPath, 'w');
       fw.writeFile(
         [
           patchComment,
           '',
-          content,
+          releaseContent,
           '// patched:',
           'SKIP_BUNDLING = YES',
           'RCT_NO_LAUNCH_PACKAGER = YES',
-          `${preprocessorDefinitions} DEBUG=1`,
+          preprocessoerDefinitions,
         ].join('\n')
       );
       await fw.close();
-      console.log(`patched ${configPath}`);
+      console.log(`patched ${releaseConfigPath}`);
     }
   }
 };
