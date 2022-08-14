@@ -41,7 +41,7 @@
     "android"
   ],
   "bin": {
-    "bde-patch": "dist/bin/bde-patch.js"
+    "bde-patch-pods": "dist/bin/patch-pods.js"
   },
   "repository": "https://github.com/343max/better-dev-exp",
   "author": "Max von Webel <max@343max.de> (https://github.com/343max)",
