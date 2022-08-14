@@ -68,6 +68,8 @@ const main = async () => {
           'SKIP_BUNDLING = YES',
           'RCT_NO_LAUNCH_PACKAGER = YES',
           preprocessoerDefinitions,
+          // 'PRODUCT_NAME=xxxx',
+          // 'PRODUCT_BUNDLE_IDENTIFIER=yyyy',
         ].join('\n')
       );
       await fw.close();
