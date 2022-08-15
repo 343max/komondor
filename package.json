@@ -33,7 +33,7 @@
     "bootstrap": "yarn example && yarn && yarn example pods",
     "try-bde-patch": "yarn build:bin && cd ../HelloBDE && npm run patch",
     "hello-bde-pod": "cd ../HelloBDE/ios && pod install",
-    "try-pod-bde-patch": "yarn hello-bde-pod && yarn build:bin && cd ../HelloBDE && npm run patch"
+    "try-pod-bde-patch": "yarn hello-bde-pod && yarn build:bin && cd ../HelloBDE && npm run patch-pods"
   },
   "keywords": [
     "react-native",
@@ -41,8 +41,7 @@
     "android"
   ],
   "bin": {
-    "bde-patch-pods": "dist/bin/patch-pods.js",
-    "bde-patch-info-plist": "dist/bin/patch-info-plist.js"
+    "komondor": "dist/bin/komondor-cli.js"
   },
   "repository": "https://github.com/343max/better-dev-exp",
   "author": "Max von Webel <max@343max.de> (https://github.com/343max)",
