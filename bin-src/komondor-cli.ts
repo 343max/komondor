@@ -2,7 +2,8 @@
 
 import { run, command, subcommands, positional, string } from 'cmd-ts';
 import { open } from 'fs/promises';
-import plist from 'plist';
+import { promisify } from 'util';
+import plist from 'simple-plist';
 import { promise as glob } from 'glob-promise';
 
 const readFile = async (path: string) => {
@@ -10,6 +11,12 @@ const readFile = async (path: string) => {
   const content = await f.readFile({ encoding: 'utf-8' });
   f.close();
   return content;
+};
+
+const writeFile = async (path: string, content: string) => {
+  const fw = await open(path, 'w');
+  fw.writeFile(content);
+  await fw.close();
 };
 
 const readPackageJson = async () => {
@@ -34,14 +41,23 @@ type Config = {
   debugConfiguration: string;
 };
 
+const ConfigEnvKey = {
+  displayName: 'KO_PRODUCT_NAME',
+  bundleIdentifier: 'KO_PRODUCT_BUNDLE_IDENTIFIER',
+  protocolHandler: 'KO_PROTOCOL_HANDLER',
+};
+
 const readBdeConfig = async (): Promise<Config> => ({
   displayName: '$(PRODUCT_NAME) Dev',
-  bundleIdentifier: '$(PRODUCT_BUNDLE_IDENTIFIER).bde',
-  protocolHandler: '$(PRODUCT_BUNDLE_IDENTIFIER).bde',
+  bundleIdentifier: '$(PRODUCT_BUNDLE_IDENTIFIER).komondor',
+  protocolHandler: '$(PRODUCT_BUNDLE_IDENTIFIER).komondor',
   releaseConfiguration: 'Release',
   debugConfiguration: 'Debug',
   ...(await readPackageJson()).betterDevExp,
 });
+
+const readPlistFile = promisify(plist.readFile);
+const writePlistFile = promisify(plist.writeBinaryFile);
 
 const patchInfoPlistCommand = command({
   name: 'patch-info-plist',
@@ -49,29 +65,23 @@ const patchInfoPlistCommand = command({
     plistPath: positional({ type: string, displayName: 'plist path' }),
   },
   handler: async ({ plistPath }) => {
-    const xml = await readFile(plistPath);
-
-    const dict = plist.parse(xml) as Record<string, any>;
-
-    const { protocolHandler, displayName, bundleIdentifier } =
-      await readBdeConfig();
+    const dict = (await readPlistFile<any>(plistPath))!;
 
     dict.CFBundleURLTypes = [
       ...(dict.CFBundleURLTypes ?? []),
       {
-        CFBundleURLName: bundleIdentifier,
-        CFBundleURLSchemes: [protocolHandler],
+        CFBundleURLName: process.env[ConfigEnvKey.bundleIdentifier],
+        CFBundleURLSchemes: [process.env[ConfigEnvKey.protocolHandler]],
       },
     ];
 
-    dict.CFBundleDisplayName = displayName;
-    dict.CFBundleIdentifier = bundleIdentifier;
+    dict.CFBundleDisplayName = process.env[ConfigEnvKey.displayName];
+    dict.CFBundleIdentifier = process.env[ConfigEnvKey.bundleIdentifier];
 
     dict.NSAppTransportSecurity = { NSAllowsArbitraryLoads: true };
 
-    const f = await open(plistPath, 'w');
-    f.writeFile(plist.build(dict));
-    f.close();
+    await writePlistFile(plistPath, dict);
+    console.log(`komondor patched ${plistPath}`);
   },
 });
 
@@ -84,13 +94,19 @@ const patchPodsCommand = command({
       matcher: { [Symbol.match](string: string): RegExpMatchArray | null }
     ) => file.split('\n').find((l) => l.match(matcher));
 
-    const { releaseConfiguration, debugConfiguration } = await readBdeConfig();
+    const {
+      releaseConfiguration,
+      debugConfiguration,
+      displayName,
+      bundleIdentifier,
+      protocolHandler,
+    } = await readBdeConfig();
 
     const configs = await glob(
       `ios/Pods/Target Support Files/*/*.${releaseConfiguration.toLowerCase()}.xcconfig`
     );
 
-    const patchComment = `// patched in by ${command}. Revert by running pod install again`;
+    const patchComment = `// patched in by komondor. Revert by running pod install again`;
 
     for (const releaseConfigPath of configs) {
       const releaseContent = await readFile(releaseConfigPath);
@@ -124,8 +140,8 @@ const patchPodsCommand = command({
       if (releaseContent.includes(patchComment)) {
         console.log(`${releaseConfigPath} already patched, skipping`);
       } else {
-        const fw = await open(releaseConfigPath, 'w');
-        fw.writeFile(
+        await writeFile(
+          releaseConfigPath,
           [
             patchComment,
             '',
@@ -133,11 +149,36 @@ const patchPodsCommand = command({
             '// patched:',
             'SKIP_BUNDLING = YES',
             'RCT_NO_LAUNCH_PACKAGER = YES',
+            `${ConfigEnvKey.displayName} = ${displayName}`,
+            `${ConfigEnvKey.bundleIdentifier} = ${bundleIdentifier}`,
+            `${ConfigEnvKey.protocolHandler} = ${protocolHandler}`,
             preprocessoerDefinitions,
           ].join('\n')
         );
-        await fw.close();
+        console.log(`patched ${releaseConfigPath}`);
       }
+    }
+
+    const podsResourcesScripts = await glob(
+      'ios/Pods/Target Support Files/Pods-*/Pods-*-resources.sh'
+    );
+
+    for (const script of podsResourcesScripts) {
+      console.log(`patching ${script}`);
+      const content = await readFile(script);
+      await writeFile(
+        script,
+        [
+          '# patched in by ${command}. Revert by running pod install again',
+          '',
+          'WITH_ENVIRONMENT="../node_modules/react-native/scripts/xcode/with-environment.sh"',
+          'KOMONDOR_CLI="../node_modules/better-dev-exp/dist/bin/komondor-cli.js patch-info-plist ${TARGET_BUILD_DIR}/${INFOPLIST_PATH}"',
+          'source $WITH_ENVIRONMENT',
+          '$NODE_BINARY $KOMONDOR_CLI',
+          '',
+          content,
+        ].join('\n')
+      );
     }
   },
 });
