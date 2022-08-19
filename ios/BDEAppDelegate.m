@@ -6,6 +6,7 @@
 #import "DHDevHelper.h"
 #import "Swizzle.h"
 #import "BDEOpenURLQueue.h"
+#import "BetterDevExp.h"
 
 #import <React/RCTBridge.h>
 
@@ -49,6 +50,7 @@ extern int BDEApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
              @"buildMenuWithBuilder:",
              @"nextResponder",
              @"sourceURLForBridge:",
+             @"extraModulesForBridge:",
          ]) {
              [self swizzleDelegateMethod:NSSelectorFromString(selectorString)
                           forAppDelegate:appDelegateClass];
@@ -96,6 +98,13 @@ extern int BDEApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
 - (NSURL *)swizzled_sourceURLForBridge:(RCTBridge *)bridge
 {
     return [BDEBundleURLProvider sharedProvider].entryURL;
+}
+
+- (NSArray<id<RCTBridgeModule>> *)swizzled_extraModulesForBridge:(RCTBridge *)bridge
+{
+    return @[
+        [[BetterDevExp alloc] init]
+    ];
 }
 
 @end
