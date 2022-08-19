@@ -171,10 +171,12 @@ const patchPodsCommand = command({
         [
           '# patched in by ${command}. Revert by running pod install again',
           '',
+          'echo Komondor: patching plist',
           'WITH_ENVIRONMENT="../node_modules/react-native/scripts/xcode/with-environment.sh"',
           'KOMONDOR_CLI="../node_modules/better-dev-exp/dist/bin/komondor-cli.js patch-info-plist ${TARGET_BUILD_DIR}/${INFOPLIST_PATH}"',
           'source $WITH_ENVIRONMENT',
           '$NODE_BINARY $KOMONDOR_CLI',
+          'echo Komondor: patching done',
           '',
           content,
         ].join('\n')
