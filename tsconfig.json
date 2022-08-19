@@ -3,9 +3,11 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "better-dev-exp": ["./src/index"]
+      "better-dev-exp": ["./src/index"],
+      "*": ["node_modules/*", "src/typings/*"]
     },
     "jsx": "react",
     "emitDeclarationOnly": true
-  }
+  },
+  "ts-node": { "compilerOptions": { "module": "commonjs" } }
 }
