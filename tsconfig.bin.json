@@ -7,7 +7,10 @@
     "allowJs": false,
     "target": "ES2020",
     "importHelpers": false,
-    "module": "commonjs"
+    "module": "commonjs",
+    "paths": {
+      "*": ["node_modules/*", "bin-src/typings/*"]
+    }
   },
   "include": ["bin-src/**/*"]
 }

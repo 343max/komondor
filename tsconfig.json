@@ -3,8 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "better-dev-exp": ["./src/index"],
-      "*": ["node_modules/*", "src/typings/*"]
+      "better-dev-exp": ["./src/index"]
     },
     "jsx": "react",
     "emitDeclarationOnly": true
