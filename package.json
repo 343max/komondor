@@ -1,5 +1,5 @@
 {
-  "name": "better-dev-exp",
+  "name": "komondor",
   "version": "0.1.0",
   "description": "test",
   "main": "lib/commonjs/index",
@@ -43,13 +43,13 @@
   "bin": {
     "komondor": "dist/bin/komondor-cli.js"
   },
-  "repository": "https://github.com/343max/better-dev-exp",
+  "repository": "https://github.com/343max/komondor",
   "author": "Max von Webel <max@343max.de> (https://github.com/343max)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/343max/better-dev-exp/issues"
+    "url": "https://github.com/343max/komondor/issues"
   },
-  "homepage": "https://github.com/343max/better-dev-exp#readme",
+  "homepage": "https://github.com/343max/komondor#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },

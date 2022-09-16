@@ -63,7 +63,7 @@ const readBdeConfig = async (): Promise<Config> => ({
   protocolHandler: '$(PRODUCT_BUNDLE_IDENTIFIER).komondor',
   releaseConfiguration: 'Release',
   debugConfiguration: 'Debug',
-  ...(await readPackageJson()).betterDevExp,
+  ...(await readPackageJson()).komondor,
 });
 
 const readPlistFile = promisify(plist.readFile);
@@ -222,7 +222,7 @@ const patchXcodeproj = command({
             '  echo "komondor not enabled, skipping"',
             'else',
             '  WITH_ENVIRONMENT="../node_modules/react-native/scripts/xcode/with-environment.sh"',
-            '  KOMONDOR_CLI="../node_modules/better-dev-exp/dist/bin/komondor-cli.js patch-info-plist ${TARGET_BUILD_DIR}/${INFOPLIST_PATH}"',
+            '  KOMONDOR_CLI="../node_modules/komondor/dist/bin/komondor-cli.js patch-info-plist ${TARGET_BUILD_DIR}/${INFOPLIST_PATH}"',
             '  source $WITH_ENVIRONMENT',
             '  $NODE_BINARY $KOMONDOR_CLI',
             'fi',
