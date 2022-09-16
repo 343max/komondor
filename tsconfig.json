@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": "./",
     "paths": {
-      "better-dev-exp": ["./src/index"]
+      "komondor": ["./src/index"]
     },
     "jsx": "react",
     "emitDeclarationOnly": true
