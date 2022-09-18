@@ -118,7 +118,7 @@
       }
     }
   },
-  "betterDevExp": {
+  "komondor": {
     "displayName": "$(PRODUCT_NAME) Dev",
     "bundleIdentifier": "$(PRODUCT_BUNDLE_IDENTIFIER).bde",
     "protocolHandler": "$(PRODUCT_BUNDLE_IDENTIFIER).bde"

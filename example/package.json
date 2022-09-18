@@ -1,6 +1,6 @@
 {
-  "name": "better-dev-exp-example",
-  "description": "Example app for better-dev-exp",
+  "name": "komondor-example",
+  "description": "Example app for komondor",
   "version": "0.0.1",
   "private": true,
   "scripts": {

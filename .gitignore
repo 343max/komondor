@@ -66,4 +66,4 @@ android/keystores/debug.keystore
 
 # Build
 /dist
-better-dev-exp-*.tgz
+komondor-*.tgz
