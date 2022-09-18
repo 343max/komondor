@@ -2,8 +2,8 @@
 
 import { run, subcommands } from 'cmd-ts';
 import { patchXcodeproj } from '../lib/patchXcodeproj';
-import { patchInfoPlistCommand } from 'bin-src/lib/patchInfoPlistCommand';
-import { patchPodsCommand } from 'bin-src/lib/patchPodsCommand';
+import { patchInfoPlistCommand } from '../lib/patchInfoPlistCommand';
+import { patchPodsCommand } from '../lib/patchPodsCommand';
 
 const commands = subcommands({
   name: 'komondor',

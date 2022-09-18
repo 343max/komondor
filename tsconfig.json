@@ -8,5 +8,6 @@
     "jsx": "react",
     "emitDeclarationOnly": true
   },
+  "exclude": ["./bin-src"],
   "ts-node": { "compilerOptions": { "module": "commonjs" } }
 }
