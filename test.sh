@@ -15,3 +15,6 @@ git reset --hard
 npm i ~/Projects/komondor/komondor-*.tgz
 
 npx komondor patch-xcodeproj
+
+cd ios
+pod install

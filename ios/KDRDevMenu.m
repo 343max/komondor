@@ -1,8 +1,8 @@
-#import "DHDevMenu.h"
+#import "KDRDevMenu.h"
 
-#import "DHDevHelper.h"
+#import "KDRDevHelper.h"
 #import "array_map.h"
-#import "DHMainWindowHandler.h"
+#import "KDRMainWindowHandler.h"
 
 #import <React/RCTBridge.h>
 
@@ -114,13 +114,13 @@
 
 @end
 
-@interface DHDevMenu (MenuGenerators)
+@interface KDRDevMenu (MenuGenerators)
 - (UIMenuElement *)resizeMenuForTitle:(NSString *)title size:(CGSize)size;
 - (UIMenuElement *)alphaMenuForTitle:(NSString *)title alpha:(CGFloat)alpha;
 @end
 
 
-@interface DHDevMenu ()
+@interface KDRDevMenu ()
 
 @property (strong, nonatomic) UIMenu *devMenu NS_AVAILABLE_IOS(13.0);
 @property (strong, nonatomic) MenuResponder *menuResponder;
@@ -135,7 +135,7 @@
 
 @end
 
-@implementation DHDevMenu
+@implementation KDRDevMenu
 
 + (BOOL)isRunningOnMac
 {
@@ -160,7 +160,7 @@
   _menuResponder = [[MenuResponder alloc] init];
   
   SEL floatOnTopAction = [_menuResponder generateSelector:^{
-    [[DHDevHelper sharedHelper] toggleFloatOnTop];
+    [[KDRDevHelper sharedHelper] toggleFloatOnTop];
     [[UIMenuSystem mainSystem] setNeedsRebuild];
   }];
   
@@ -169,9 +169,9 @@
                                                  action:floatOnTopAction
                                            propertyList:nil];
   
-  stayOnTop.state = [DHDevHelper sharedHelper].floatOnTopSetting ? UIMenuElementStateOn : UIMenuElementStateOff;
+  stayOnTop.state = [KDRDevHelper sharedHelper].floatOnTopSetting ? UIMenuElementStateOn : UIMenuElementStateOff;
   
-  __weak DHDevMenu *weakSelf = self;
+  __weak KDRDevMenu *weakSelf = self;
   SEL showDevMenuAction = [_menuResponder generateSelector:^{
     [[weakSelf rctDevMenu] show];
   }];
@@ -183,7 +183,7 @@
                                             modifierFlags:UIKeyModifierCommand | UIKeyModifierControl
                                              propertyList:nil];
   
-  NSArray *devMenuItems = array_map([DHDevMenu devMenuItemsForBridge:_bridge], ^id _Nonnull(RCTDevMenuItem *item, NSUInteger idx) {
+  NSArray *devMenuItems = array_map([KDRDevMenu devMenuItemsForBridge:_bridge], ^id _Nonnull(RCTDevMenuItem *item, NSUInteger idx) {
     NSString *keyEquivalent = nil;
     NSString *title = [item title];
     if ([title isEqualToString:@"Reload"]) {
@@ -219,7 +219,7 @@
   ]];
   
   SEL ignoresClicksAction = [self.menuResponder generateSelector:^{
-    [DHDevHelper sharedHelper].backgroundIgnoresClicks = ![DHDevHelper sharedHelper].backgroundIgnoresClicks;
+    [KDRDevHelper sharedHelper].backgroundIgnoresClicks = ![KDRDevHelper sharedHelper].backgroundIgnoresClicks;
     [[UIMenuSystem mainSystem] setNeedsRebuild];
   }];
   
@@ -227,7 +227,7 @@
                                                        image:nil
                                                       action:ignoresClicksAction
                                                 propertyList:nil];
-  ignoresClicksMenu.state = [DHDevHelper sharedHelper].backgroundIgnoresClicks ? UIMenuElementStateOn : UIMenuElementStateOff;
+  ignoresClicksMenu.state = [KDRDevHelper sharedHelper].backgroundIgnoresClicks ? UIMenuElementStateOn : UIMenuElementStateOff;
   
   UIMenu *windowAlphaMenu = [UIMenu menuWithTitle:@"Inactive Window"
                                          children:@[
@@ -283,12 +283,12 @@
 
 @end
 
-@implementation DHDevMenu (MenuGenerators)
+@implementation KDRDevMenu (MenuGenerators)
 
 - (UIMenuElement *)resizeMenuForTitle:(NSString *)title size:(CGSize)size
 {
   SEL action = [_menuResponder generateSelector:^{
-    [[DHDevHelper sharedHelper].windowHandler setWindowSize:size animated:YES];
+    [[KDRDevHelper sharedHelper].windowHandler setWindowSize:size animated:YES];
   }];
   
   return [UICommand commandWithTitle:title
@@ -300,7 +300,7 @@
 - (UIMenuElement *)alphaMenuForTitle:(NSString *)title alpha:(CGFloat)alpha
 {
   SEL action = [_menuResponder generateSelector:^{
-    [DHDevHelper sharedHelper].backgroundAlpha = alpha;
+    [KDRDevHelper sharedHelper].backgroundAlpha = alpha;
     [[UIMenuSystem mainSystem] setNeedsRebuild];
   }];
   
@@ -309,7 +309,7 @@
                                             action:action
                                       propertyList:nil];
   
-  command.state = [DHDevHelper sharedHelper].backgroundAlpha == alpha ? UIMenuElementStateOn : UIMenuElementStateOff;
+  command.state = [KDRDevHelper sharedHelper].backgroundAlpha == alpha ? UIMenuElementStateOn : UIMenuElementStateOff;
   
   return command;
 }

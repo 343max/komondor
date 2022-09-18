@@ -35,11 +35,11 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 
-@interface BDEBundleURLProvider : NSObject <BundleURLProvider>
+@interface KDRBundleURLProvider : NSObject <BundleURLProvider>
 
 + (void)swizzle;
    
-+ (BDEBundleURLProvider *)sharedProvider;
++ (KDRBundleURLProvider *)sharedProvider;
 
 @property (nonatomic, readonly) BOOL showsInternalPicker;
 

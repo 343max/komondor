@@ -6,7 +6,7 @@ import {
   hasNotSwitched,
   supportsLocalDevelopment,
   switchToPackager,
-} from 'better-dev-exp';
+} from 'komondor';
 import { List } from './List';
 import { tw } from './tw';
 import { useRunningPackagers } from './lib/useRunningPackagers';

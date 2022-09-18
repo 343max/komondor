@@ -2,9 +2,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *const BDEOpenURLQueueChangeNotification;
+extern NSString *const KDROpenURLQueueChangeNotification;
 
-@interface BDEOpenURLQueue : NSObject
+@interface KDROpenURLQueue : NSObject
 
 + (instancetype)sharedQueue;
 

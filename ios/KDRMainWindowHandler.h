@@ -3,7 +3,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DHMainWindowHandler : NSObject
+@interface KDRMainWindowHandler : NSObject
 
 @property (assign, nonatomic) CGFloat backgroundAlpha;
 @property (assign, nonatomic) BOOL backgroundIgnoresClicks;

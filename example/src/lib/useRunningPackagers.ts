@@ -1,4 +1,4 @@
-import { isPackagerRunning } from 'better-dev-exp';
+import { isPackagerRunning } from 'komondor';
 import React from 'react';
 import { useInterval } from './useInterval';
 

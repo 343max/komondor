@@ -1,11 +1,11 @@
 #import <UIKit/UIKit.h>
 
-#import <BetterDevExp/BetterDevExp.h>
+#import <Komondor/Komondor.h>
 #import "AppDelegate.h"
 
 int main(int argc, char *argv[])
 {
   @autoreleasepool {
-    return BDEApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
+    return KDRApplicationMain(argc, argv, nil, NSStringFromClass([AppDelegate class]));
   }
 }

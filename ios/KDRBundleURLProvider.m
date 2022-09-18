@@ -1,4 +1,4 @@
-#import "BDEBundleURLProvider.h"
+#import "KDRBundleURLProvider.h"
 
 #import <React/RCTBridge.h>
 #import <React/RCTBundleURLProvider.h>
@@ -8,10 +8,10 @@
 #import <React/RCTDevMenu.h>
 #endif
 
-#import "DHDevHelper.h"
+#import "KDRDevHelper.h"
 #import "Swizzle.h"
 
-@interface BDEBundleURLProvider ()
+@interface KDRBundleURLProvider ()
 
 @property (strong, nonatomic) RCTBundleURLProvider *originalProvider;
 
@@ -30,12 +30,12 @@
 
 + (id)swizzledSharedSettings
 {
-    return [BDEBundleURLProvider sharedProvider];
+    return [KDRBundleURLProvider sharedProvider];
 }
 
 @end
 
-@implementation BDEBundleURLProvider
+@implementation KDRBundleURLProvider
 
 + (void)swizzle;
 {
@@ -77,18 +77,18 @@
     _resetBundleEndpointMenuItem = [RCTDevMenuItem buttonItemWithTitleBlock:^NSString *{
         return @"🏠 Bundle Picker";
     } handler:^{
-        [[BDEBundleURLProvider sharedProvider] switchToInternalPicker];
+        [[KDRBundleURLProvider sharedProvider] switchToInternalPicker];
     }];
     [bridge.devMenu addItem:_resetBundleEndpointMenuItem];
 #endif
 }
 
-+ (BDEBundleURLProvider *)sharedProvider
++ (KDRBundleURLProvider *)sharedProvider
 {
-    static BDEBundleURLProvider *sharedProvider = nil;
+    static KDRBundleURLProvider *sharedProvider = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-      sharedProvider = [[BDEBundleURLProvider alloc] init];
+      sharedProvider = [[KDRBundleURLProvider alloc] init];
     });
     return sharedProvider;
 }
@@ -188,7 +188,7 @@
 #if TARGET_OS_SIMULATOR
     return @"localhost"
 #else
-    if ([DHDevHelper isRunningOnMac]) {
+    if ([KDRDevHelper isRunningOnMac]) {
         return @"localhost";
     } else {
         static NSString *ipGuess;

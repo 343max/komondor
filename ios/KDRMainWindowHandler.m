@@ -1,14 +1,14 @@
-#import "DHMainWindowHandler.h"
+#import "KDRMainWindowHandler.h"
 
 #import "AppKitHeaders.h"
 
-@interface DHMainWindowHandler ()
+@interface KDRMainWindowHandler ()
 
 @property (nonatomic, weak) NSWindow *mainWindow;
 
 @end
 
-@implementation DHMainWindowHandler
+@implementation KDRMainWindowHandler
 
 + (BOOL)isUIKitWindow:(NSWindow *)window
 {
@@ -26,12 +26,12 @@
     _backgroundAlpha = backgroundAlpha;
     _backgroundIgnoresClicks = backgroundIgnoresClicks;
     
-    __weak DHMainWindowHandler *weakSelf = self;
+    __weak KDRMainWindowHandler *weakSelf = self;
     [[NSNotificationCenter defaultCenter] addObserverForName:@"NSWindowDidBecomeMainNotification"
                                                       object:nil
                                                        queue:[NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification * _Nonnull note) {
-      if ([DHMainWindowHandler isUIKitWindow:note.object]) {
+      if ([KDRMainWindowHandler isUIKitWindow:note.object]) {
         weakSelf.mainWindow = note.object;
         [weakSelf _setFloatOnTop:weakSelf.floatOnTop];
       }
@@ -41,7 +41,7 @@
                                                       object:nil
                                                        queue:[NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification * _Nonnull note) {
-      if ([DHMainWindowHandler isUIKitWindow:note.object]) {
+      if ([KDRMainWindowHandler isUIKitWindow:note.object]) {
         weakSelf.mainWindow = note.object;
         weakSelf.mainWindow.alphaValue = 1.0;
         weakSelf.mainWindow.ignoresMouseEvents = NO;
@@ -51,7 +51,7 @@
                                                       object:nil
                                                        queue:[NSOperationQueue mainQueue]
                                                   usingBlock:^(NSNotification * _Nonnull note) {
-      if ([DHMainWindowHandler isUIKitWindow:note.object]) {
+      if ([KDRMainWindowHandler isUIKitWindow:note.object]) {
         weakSelf.mainWindow = note.object;
         weakSelf.mainWindow.alphaValue = weakSelf.backgroundAlpha;
         weakSelf.mainWindow.ignoresMouseEvents = weakSelf.backgroundIgnoresClicks;

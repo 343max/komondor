@@ -17,4 +17,4 @@ export interface Spec extends TurboModule {
   loadDefaults(key: string): Promise<undefined | string>;
 }
 
-export default TurboModuleRegistry.getEnforcing<Spec>('BetterDevExp');
+export default TurboModuleRegistry.getEnforcing<Spec>('Komondor');

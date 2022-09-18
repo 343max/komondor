@@ -1,4 +1,4 @@
-import { addEventListener, getOpenURLQueue } from 'better-dev-exp';
+import { addEventListener, getOpenURLQueue } from 'komondor';
 import React from 'react';
 import { useAsyncEffect } from './useAsyncEffect';
 

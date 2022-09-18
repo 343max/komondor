@@ -1,27 +1,26 @@
-#import "DHDevHelper.h"
+#import "KDRDevHelper.h"
 
-#import "DHDevMenu.h"
-#import "DHMainWindowHandler.h"
-#import "BDEAppDelegate.h"
-#import "BDEBundleURLProvider.h"
+#import "KDRDevMenu.h"
+#import "KDRMainWindowHandler.h"
+#import "KDRBundleURLProvider.h"
 
-@interface DHDevHelper ()
+@interface KDRDevHelper ()
 
-@property (strong, nonatomic) DHDevMenu *devMenu;
+@property (strong, nonatomic) KDRDevMenu *devMenu;
 
 @end
 
-@implementation DHDevHelper
+@implementation KDRDevHelper
 
-+ (nullable DHDevHelper *)sharedHelper;
++ (nullable KDRDevHelper *)sharedHelper;
 {
   if (![self isRunningOnMac]) {
     return  nil;
   }
-  static DHDevHelper *sharedInstance = nil;
+  static KDRDevHelper *sharedInstance = nil;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    sharedInstance = [[DHDevHelper alloc] init];
+    sharedInstance = [[KDRDevHelper alloc] init];
   });
   return sharedInstance;
 }
@@ -37,15 +36,15 @@
 
 - (void)setupDevHelper
 {
-    [BDEBundleURLProvider swizzle];
+    [KDRBundleURLProvider swizzle];
 }
 
 - (void)setupDevMenuWithBridge:(RCTBridge *)bridge
 {
-    _devMenu = [[DHDevMenu alloc] initWithBridge:bridge];
-    _windowHandler = [[DHMainWindowHandler alloc] initWithFloatOnTop:self.floatOnTopSetting
-                                                     backgroundAlpha:self.backgroundAlpha
-                                             backgroundIgnoresClicks:self.backgroundIgnoresClicks];
+    _devMenu = [[KDRDevMenu alloc] initWithBridge:bridge];
+    _windowHandler = [[KDRMainWindowHandler alloc] initWithFloatOnTop:self.floatOnTopSetting
+                                                      backgroundAlpha:self.backgroundAlpha
+                                              backgroundIgnoresClicks:self.backgroundIgnoresClicks];
     [[UIMenuSystem mainSystem] setNeedsRebuild];
 }
 
@@ -68,7 +67,7 @@
 
 @end
 
-@implementation DHDevHelper (Settings)
+@implementation KDRDevHelper (Settings)
 
 - (BOOL)floatOnTopSetting
 {

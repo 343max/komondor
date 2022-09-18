@@ -1,5 +1,5 @@
 import React from 'react';
-import { loadDefaults, storeDefaults } from 'better-dev-exp';
+import { loadDefaults, storeDefaults } from 'komondor';
 import { useAsyncEffect } from './useAsyncEffect';
 
 export const useDefaultsStore = <T, D>(

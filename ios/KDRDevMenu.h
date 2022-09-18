@@ -9,7 +9,7 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol UIMenuBuilder;
 @class RCTBridge;
 
-@interface DHDevMenu : NSObject
+@interface KDRDevMenu : NSObject
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge;
 

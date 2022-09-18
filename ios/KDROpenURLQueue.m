@@ -1,17 +1,17 @@
-#import "BDEOpenURLQueue.h"
+#import "KDROpenURLQueue.h"
 
 #import "array_map.h"
 
-NSString *const BDEOpenURLQueueChangeNotification = @"BDEOpenURLQueueChangeNotification";
+NSString *const KDROpenURLQueueChangeNotification = @"KDROpenURLQueueChangeNotification";
 
-@implementation BDEOpenURLQueue
+@implementation KDROpenURLQueue
 
 + (instancetype)sharedQueue
 {
-    static BDEOpenURLQueue *sharedQueue = nil;
+    static KDROpenURLQueue *sharedQueue = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        sharedQueue = [[BDEOpenURLQueue alloc] init];
+        sharedQueue = [[KDROpenURLQueue alloc] init];
     });
     return sharedQueue;
 }
@@ -30,7 +30,7 @@ NSString *const BDEOpenURLQueueChangeNotification = @"BDEOpenURLQueueChangeNotif
 - (void)add:(NSURL *)url
 {
     _queue = [_queue arrayByAddingObject:url];
-    [[NSNotificationCenter defaultCenter] postNotificationName:BDEOpenURLQueueChangeNotification
+    [[NSNotificationCenter defaultCenter] postNotificationName:KDROpenURLQueueChangeNotification
                                                         object:self
                                                       userInfo:@{
         @"type": @"queueAdded",

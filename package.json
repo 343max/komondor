@@ -14,7 +14,7 @@
     "android",
     "ios",
     "cpp",
-    "BetterDevExp.podspec",
+    "Komondor.podspec",
     "!lib/typescript/example",
     "!android/build",
     "!ios/build",
@@ -172,7 +172,7 @@
   "codegenConfig": {
     "libraries": [
       {
-        "name": "RNBetterDevExpSpec",
+        "name": "RNKomondorSpec",
         "type": "modules",
         "jsSrcsDir": "src"
       }

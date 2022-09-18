@@ -4,7 +4,7 @@ import {
   NativeModules,
   Platform,
 } from 'react-native';
-import type { Spec } from './NativeBetterDevExp';
+import type { Spec } from './NativeKomondor';
 
 const LINKING_ERROR =
   `The package 'better-dev-exp' doesn't seem to be linked. Make sure: \n\n` +
@@ -15,14 +15,14 @@ const LINKING_ERROR =
 // @ts-expect-error
 const isTurboModuleEnabled = global.__turboModuleProxy != null;
 
-const BetterDevExpModule = isTurboModuleEnabled
-  ? require('./NativeBetterDevExp').default
-  : NativeModules.BetterDevExp;
+const KomondorModule = isTurboModuleEnabled
+  ? require('./NativeKomondor').default
+  : NativeModules.Komondor;
 
-const EventEmitter = new NativeEventEmitter(NativeModules.BetterDevExp);
+const EventEmitter = new NativeEventEmitter(NativeModules.Komondor);
 
-const BetterDevExp: Spec = BetterDevExpModule
-  ? BetterDevExpModule
+const Komondor: Spec = KomondorModule
+  ? KomondorModule
   : new Proxy(
       {},
       {
@@ -52,37 +52,37 @@ export const switchToPackager = async (
   scheme = 'http'
 ): Promise<void> => {
   const { host, port } = splitPort(bundleHost);
-  BetterDevExp.switchToPackager(host, port, scheme);
+  Komondor.switchToPackager(host, port, scheme);
 };
 
 export const getUrlSchemes = async (): Promise<string[]> =>
-  BetterDevExp.getUrlSchemes();
+  Komondor.getUrlSchemes();
 
 export const isPackagerRunning = async (
   bundleHost: string,
   scheme = 'http'
 ): Promise<boolean> => {
   const { host, port } = splitPort(bundleHost);
-  return await BetterDevExp.isPackagerRunning(host, port, scheme);
+  return await Komondor.isPackagerRunning(host, port, scheme);
 };
 
-export const hasNotSwitched = async () => await BetterDevExp.hasNotSwitched();
+export const hasNotSwitched = async () => await Komondor.hasNotSwitched();
 
 export const isRunningOnDesktop = async () =>
-  await BetterDevExp.isRunningOnDesktop();
+  await Komondor.isRunningOnDesktop();
 
 export const supportsLocalDevelopment = async () =>
-  await BetterDevExp.supportsLocalDevelopment();
+  await Komondor.supportsLocalDevelopment();
 
-export const getOpenURLQueue = async () => await BetterDevExp.getOpenURLQueue();
+export const getOpenURLQueue = async () => await Komondor.getOpenURLQueue();
 
 export const storeDefaults = async (
   key: string,
   value: string
-): Promise<void> => await BetterDevExp.storeDefaults(key, value);
+): Promise<void> => await Komondor.storeDefaults(key, value);
 
 export const loadDefaults = async (key: string): Promise<undefined | string> =>
-  await BetterDevExp.loadDefaults(key);
+  await Komondor.loadDefaults(key);
 
 export function addEventListener(
   type: 'queueAdded',

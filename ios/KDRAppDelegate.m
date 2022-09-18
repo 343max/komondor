@@ -1,16 +1,16 @@
-#import "BDEAppDelegate.h"
+#import "KDRAppDelegate.h"
 
 #import <React/RCTLinkingManager.h>
 
-#import "BDEBundleURLProvider.h"
-#import "DHDevHelper.h"
+#import "KDRBundleURLProvider.h"
+#import "KDRDevHelper.h"
 #import "Swizzle.h"
-#import "BDEOpenURLQueue.h"
-#import "BetterDevExp.h"
+#import "KDROpenURLQueue.h"
+#import "Komondor.h"
 
 #import <React/RCTBridge.h>
 
-@interface BDEAppDelegate ()
+@interface KDRAppDelegate ()
 
 + (void)swizzle:(NSString *)delegateClassName;
 
@@ -18,16 +18,16 @@
 
 static NSString *originalDelegateClassName;
 
-extern int BDEApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSString * _Nullable principalClassName, NSString * _Nullable delegateClassName)
+extern int KDRApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSString * _Nullable principalClassName, NSString * _Nullable delegateClassName)
 {
 #if DEBUG
-    [BDEAppDelegate swizzle:delegateClassName];
-    [[DHDevHelper sharedHelper] setupDevHelper];
+    [KDRAppDelegate swizzle:delegateClassName];
+    [[KDRDevHelper sharedHelper] setupDevHelper];
 #endif
     return UIApplicationMain(argc, argv, principalClassName, delegateClassName);
 }
 
-@implementation BDEAppDelegate
+@implementation KDRAppDelegate
 
 + (void)swizzleDelegateMethod:(SEL)originalSelector forAppDelegate:(Class)appDelegateClass;
 {
@@ -62,12 +62,12 @@ extern int BDEApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
                      openURL:(NSURL *)url
                      options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
 {
-    if ([url.host isEqualToString:@"bde"]) {
-        if (BDEBundleURLProvider.sharedProvider.showsInternalPicker) {
-            [BDEOpenURLQueue.sharedQueue add:url];
+    if ([url.host isEqualToString:@"kdr"]) {
+        if (KDRBundleURLProvider.sharedProvider.showsInternalPicker) {
+            [KDROpenURLQueue.sharedQueue add:url];
         } else {
-            [BDEOpenURLQueue.sharedQueue add:url];
-            [BDEBundleURLProvider.sharedProvider switchToInternalPicker];
+            [KDROpenURLQueue.sharedQueue add:url];
+            [KDRBundleURLProvider.sharedProvider switchToInternalPicker];
         }
         return YES;
     } else if ([self respondsToSelector:@selector(swizzled_application:openURL:options:)]) {
@@ -84,7 +84,7 @@ extern int BDEApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
     }
     
     if (builder.system == [UIMenuSystem mainSystem]) {
-        [[DHDevHelper sharedHelper] buildMenuWithBuilder:builder];
+        [[KDRDevHelper sharedHelper] buildMenuWithBuilder:builder];
     }
 }
 
@@ -92,18 +92,18 @@ extern int BDEApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
 {
     UIResponder *nextResponder = [self respondsToSelector:@selector(swizzled_nextResponder)] ?
                                                                 [self swizzled_nextResponder] : nil;
-    return  [[DHDevHelper sharedHelper] nextResponderInsteadOfResponder:nextResponder];
+    return  [[KDRDevHelper sharedHelper] nextResponderInsteadOfResponder:nextResponder];
 }
 
 - (NSURL *)swizzled_sourceURLForBridge:(RCTBridge *)bridge
 {
-    return [BDEBundleURLProvider sharedProvider].entryURL;
+    return [KDRBundleURLProvider sharedProvider].entryURL;
 }
 
 - (NSArray<id<RCTBridgeModule>> *)swizzled_extraModulesForBridge:(RCTBridge *)bridge
 {
     return @[
-        [[BetterDevExp alloc] init]
+        [[Komondor alloc] init]
     ];
 }
 

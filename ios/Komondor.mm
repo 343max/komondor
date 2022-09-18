@@ -1,25 +1,25 @@
-#import "BetterDevExp.h"
+#import "Komondor.h"
 
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTReloadCommand.h>
 #import <React/RCTUtils.h>
 
 #ifdef RCT_NEW_ARCH_ENABLED
-#import "RNBetterDevExpSpec.h"
+#import "RNKomondorSpec.h"
 #endif
 
 #if __has_include(<React/RCTDevMenu.h>)
 #import <React/RCTDevMenu.h>
 #endif
 
-#import "BDEBundleURLProvider.h"
-#import "DHDevHelper.h"
-#import "BDEOpenURLQueue.h"
+#import "KDRBundleURLProvider.h"
+#import "KDRDevHelper.h"
+#import "KDROpenURLQueue.h"
 #import "array_map.h"
 
 static BOOL hasSwitched = NO;
 
-@interface BetterDevExp ()
+@interface Komondor ()
 
 #if __has_include(<React/RCTDevMenu.h>)
 @property (strong, nonatomic) RCTDevMenuItem *resetBundleEndpoint;
@@ -27,15 +27,15 @@ static BOOL hasSwitched = NO;
 
 @end
 
-@implementation BetterDevExp
+@implementation Komondor
 
 @synthesize bridge = _bridge;
 
 - (void)setBridge:(RCTBridge *)bridge
 {
     _bridge = bridge;
-    
-    [[DHDevHelper sharedHelper] setupDevMenuWithBridge:bridge];
+
+    [[KDRDevHelper sharedHelper] setupDevMenuWithBridge:bridge];
 }
 
 RCT_EXPORT_MODULE()
@@ -47,8 +47,8 @@ RCT_REMAP_METHOD(switchToPackager, switchToPackagerHost:(NSString *__nonnull)hos
                                            withRejecter:(RCTPromiseRejectBlock)reject)
 {
     hasSwitched = YES;
-    
-    [[BDEBundleURLProvider sharedProvider] switchToPackagerHost:host
+
+    [[KDRBundleURLProvider sharedProvider] switchToPackagerHost:host
                                                            port:port.unsignedIntegerValue
                                                          scheme:scheme];
     resolve(nil);
@@ -59,19 +59,19 @@ RCT_REMAP_METHOD(getUrlSchemes,
                               withRejecter:(RCTPromiseRejectBlock)reject)
 {
     NSDictionary* dict = [[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleURLTypes"] firstObject];
-    
+
     if (dict == nil) {
         resolve(@[]);
         return;
     }
-    
+
     NSArray *schemes = dict[@"CFBundleURLSchemes"];
-    
+
     if (![schemes isKindOfClass:[NSArray class]]) {
         resolve(@[]);
         return;
     }
-    
+
     resolve(schemes);
 }
 
@@ -94,7 +94,7 @@ RCT_REMAP_METHOD(hasNotSwitched, hasNotSwitchedWithResolver:(RCTPromiseResolveBl
 RCT_REMAP_METHOD(isRunningOnDesktop, isRunningOnDesktopWithResolver:(RCTPromiseResolveBlock)resolve
                                                        withRejecter:(RCTPromiseRejectBlock)reject)
 {
-    resolve([NSNumber numberWithBool:[DHDevHelper isRunningOnMac]]);
+    resolve([NSNumber numberWithBool:[KDRDevHelper isRunningOnMac]]);
 }
 
 RCT_REMAP_METHOD(storeDefaults, storeDefaultsKey:(NSString *)key
@@ -102,7 +102,7 @@ RCT_REMAP_METHOD(storeDefaults, storeDefaultsKey:(NSString *)key
                                     withResolver:(RCTPromiseResolveBlock)resolve
                                     withRejecter:(RCTPromiseRejectBlock)reject)
 {
-    [[NSUserDefaults standardUserDefaults] setObject:value forKey:[NSString stringWithFormat:@"BDE_%@", key]];
+    [[NSUserDefaults standardUserDefaults] setObject:value forKey:[NSString stringWithFormat:@"KDR_%@", key]];
     resolve(nil);
 }
 
@@ -110,7 +110,7 @@ RCT_REMAP_METHOD(loadDefaults, loadDefaultsKey:(NSString *)key
                                   withResolver:(RCTPromiseResolveBlock)resolve
                                   withRejecter:(RCTPromiseRejectBlock)reject)
 {
-    NSString *value = [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"BDE_%@", key]];
+    NSString *value = [[NSUserDefaults standardUserDefaults] objectForKey:[NSString stringWithFormat:@"KDR_%@", key]];
     if ([value isKindOfClass:[NSString class]]) {
         resolve(value);
     } else {
@@ -124,15 +124,15 @@ RCT_REMAP_METHOD(supportsLocalDevelopment, supportsLocalDevelopmentWithResolver:
 #if TARGET_OS_SIMULATOR
     resolve([NSNumber numberWithBool:YES]);
 #else
-    resolve([NSNumber numberWithBool:[DHDevHelper isRunningOnMac]]);
+    resolve([NSNumber numberWithBool:[KDRDevHelper isRunningOnMac]]);
 #endif
 }
 
 RCT_REMAP_METHOD(getOpenURLQueue, getOpenURLQueueWithResolver:(RCTPromiseResolveBlock)resolve
                                                  withRejecter:(RCTPromiseRejectBlock)reject)
 {
-    NSArray *queue = BDEOpenURLQueue.sharedQueue.stringQueue;
-    [BDEOpenURLQueue.sharedQueue flush];
+    NSArray *queue = KDROpenURLQueue.sharedQueue.stringQueue;
+    [KDROpenURLQueue.sharedQueue flush];
     resolve(queue);
 }
 
@@ -140,14 +140,14 @@ RCT_REMAP_METHOD(getOpenURLQueue, getOpenURLQueueWithResolver:(RCTPromiseResolve
 {
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleEventListener:)
-                                                 name:BDEOpenURLQueueChangeNotification
+                                                 name:KDROpenURLQueueChangeNotification
                                                object:nil];
 }
 
 - (void)stopObserving
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                    name:BDEOpenURLQueueChangeNotification
+                                                    name:KDROpenURLQueueChangeNotification
                                                   object:nil];
 }
 
@@ -158,7 +158,7 @@ RCT_REMAP_METHOD(getOpenURLQueue, getOpenURLQueueWithResolver:(RCTPromiseResolve
 
 - (void)handleEventListener:(NSNotification *)notification
 {
-    [BDEOpenURLQueue.sharedQueue flush];
+    [KDROpenURLQueue.sharedQueue flush];
     [self sendEventWithName:notification.userInfo[@"type"]
                        body:notification.userInfo[@"body"]];
 }
@@ -167,7 +167,7 @@ RCT_REMAP_METHOD(getOpenURLQueue, getOpenURLQueueWithResolver:(RCTPromiseResolve
 - (std::shared_ptr<facebook::react::TurboModule>)getTurboModule:
     (const facebook::react::ObjCTurboModule::InitParams &)params
 {
-    return std::make_shared<facebook::react::NativeBetterDevExpSpecJSI>(params);
+    return std::make_shared<facebook::react::NativeKomondorSpecJSI>(params);
 }
 #endif
 

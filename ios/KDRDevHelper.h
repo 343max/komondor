@@ -6,11 +6,11 @@ NS_ASSUME_NONNULL_BEGIN
 @protocol UIMenuBuilder;
 @class UIResponder;
 @class RCTBridge;
-@class DHMainWindowHandler;
+@class KDRMainWindowHandler;
 
-@interface DHDevHelper : NSObject
+@interface KDRDevHelper : NSObject
 
-+ (nullable DHDevHelper *)sharedHelper;
++ (nullable KDRDevHelper *)sharedHelper;
 + (BOOL)isRunningOnMac;
 
 - (void)setupDevHelper;
@@ -23,12 +23,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)toggleFloatOnTop;
 
-@property (strong, nonatomic, readonly) DHMainWindowHandler *windowHandler;
+@property (strong, nonatomic, readonly) KDRMainWindowHandler *windowHandler;
 
 @end
 
 
-@interface DHDevHelper (Settings)
+@interface KDRDevHelper (Settings)
 
 @property (assign, nonatomic) BOOL floatOnTopSetting;
 @property (assign, nonatomic) CGFloat backgroundAlpha;
