@@ -1,41 +1,11 @@
 #!/usr/bin/env node
 
-import { run, command, subcommands, positional, string } from 'cmd-ts';
-import { promisify } from 'util';
-import plist from 'simple-plist';
+import { run, command, subcommands } from 'cmd-ts';
 import { promise as glob } from 'glob-promise';
 import { ConfigEnvKey, readConfig } from '../lib/package-json';
 import { readFile, writeFile } from '../lib/file';
-import { patchXcodeproj } from '../lib/patchPodsCommand';
-
-const readPlistFile = promisify(plist.readFile);
-const writePlistFile = promisify(plist.writeBinaryFile);
-
-const patchInfoPlistCommand = command({
-  name: 'patch-info-plist',
-  args: {
-    plistPath: positional({ type: string, displayName: 'plist path' }),
-  },
-  handler: async ({ plistPath }) => {
-    const dict = (await readPlistFile<any>(plistPath))!;
-
-    dict.CFBundleURLTypes = [
-      ...(dict.CFBundleURLTypes ?? []),
-      {
-        CFBundleURLName: process.env[ConfigEnvKey.bundleIdentifier],
-        CFBundleURLSchemes: [process.env[ConfigEnvKey.protocolHandler]],
-      },
-    ];
-
-    dict.CFBundleDisplayName = process.env[ConfigEnvKey.displayName];
-    dict.CFBundleIdentifier = process.env[ConfigEnvKey.bundleIdentifier];
-
-    dict.NSAppTransportSecurity = { NSAllowsArbitraryLoads: true };
-
-    await writePlistFile(plistPath, dict);
-    console.log(`komondor patched ${plistPath}`);
-  },
-});
+import { patchXcodeproj } from '../lib/patchXcodeproj';
+import { patchInfoPlistCommand } from 'bin-src/lib/patchInfoPlistCommand';
 
 const patchPodsCommand = command({
   name: 'patch-pods',
