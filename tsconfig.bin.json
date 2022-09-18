@@ -3,7 +3,7 @@
   "compilerOptions": {
     "noEmit": false,
     "rootDir": "bin-src",
-    "outDir": "dist/bin",
+    "outDir": "dist",
     "allowJs": false,
     "target": "ES2020",
     "importHelpers": false,
