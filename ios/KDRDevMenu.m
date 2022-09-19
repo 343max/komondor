@@ -152,8 +152,14 @@ _handler(19);
     NSString *title = [item title];
     if ([title isEqualToString:@"Reload"]) {
       keyEquivalent = @"r";
+    } else if([title isEqualToString:@"Stop Debugging"] | [title isEqualToString:@"Debug with Chrome"]) {
+      keyEquivalent = @"d";
+    } else if([title isEqualToString:@"Show Perf Monitor"] | [title isEqualToString:@"Hide Perf Monitor"]) {
+      keyEquivalent = @"p";
+    } else if([title isEqualToString:@"Show Inspector"] | [title isEqualToString:@"Hide Inspector"]) {
+      keyEquivalent = @"i";
     }
-      
+
     SEL action = [self.menuResponder generateSelector:^{
       [item callHandler];
       [[UIMenuSystem mainSystem] setNeedsRebuild];
@@ -169,7 +175,7 @@ _handler(19);
                                       image:nil
                                      action:action
                                       input:keyEquivalent
-                              modifierFlags:UIKeyModifierCommand
+                              modifierFlags:UIKeyModifierCommand | UIKeyModifierControl
                                propertyList:nil];
     }
   }).mutableCopy ;
@@ -209,7 +215,7 @@ _handler(19);
     showDevMenu,
   ] arrayByAddingObjectsFromArray:devMenuItems];
 
-  _devMenu = [UIMenu menuWithTitle:@"Dev" children:menuItems];
+  _devMenu = [UIMenu menuWithTitle:@"Komondor" children:menuItems];
   
   [builder insertSiblingMenu:_devMenu beforeMenuForIdentifier:UIMenuHelp];
 }
