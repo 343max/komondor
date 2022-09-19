@@ -14,38 +14,10 @@
 - (NSArray<RCTDevMenuItem *> *)_menuItemsToPresent;
 @end
 
-@interface AppDelegate : NSObject
-- (void)toggleStayOnTop;
-@end
-
-@interface MenuAction : NSObject
-
-@property (assign, nonatomic, readonly) SEL selector;
-@property (strong, nonatomic) dispatch_block_t handler;
-
-- (instancetype)initWithHandler:(dispatch_block_t)handler;
-
-@end
-
-@implementation MenuAction
-
-- (instancetype)initWithHandler:(dispatch_block_t)handler
-{
-  self = [super init];
-  if (self) {
-    _handler = handler;
-    NSString *sel = [NSString stringWithFormat:@"handler_%lx", (unsigned long)self];
-    _selector = NSSelectorFromString(sel);
-  }
-  return self;
-}
-
-@end
-
 @interface MenuResponder : UIResponder
 
 @property (weak, nonatomic) UIResponder *_nextResponder;
-@property (strong, nonatomic, readonly) NSMutableArray *handlers;
+@property (strong, nonatomic, readonly) NSMutableArray<dispatch_block_t> *handlers;
 
 - (SEL)generateSelector:(dispatch_block_t)handler;
 
@@ -67,50 +39,42 @@
   return __nextResponder;
 }
 
-- (MenuAction *)actionForSelector:(SEL)selector
-{
-  NSUInteger index = [_handlers indexOfObjectPassingTest:^BOOL(MenuAction *action, NSUInteger idx, BOOL * _Nonnull stop) {
-    if (action.selector == selector) {
-      *stop = YES;
-      return YES;
-    } else {
-      return NO;
-    }
-  }];
-  
-  if (index == NSNotFound) {
-    return  nil;
-  } else {
-    return _handlers[index];
-  }
-}
-
-- (BOOL)respondsToSelector:(SEL)aSelector
-{
-  if ([self actionForSelector:aSelector]) {
-    return YES;
-  } else {
-    return [super respondsToSelector:aSelector];
-  }
-}
-
-- (id)performSelector:(SEL)aSelector withObject:(id)object
-{
-  MenuAction *action = [self actionForSelector:aSelector];
-  if (action) {
-    action.handler();
-    return nil;
-  } else {
-    return [super performSelector:aSelector withObject:object];
-  }
-}
-
 - (SEL)generateSelector:(dispatch_block_t)handler
 {
-  MenuAction *action = [[MenuAction alloc] initWithHandler:handler];
-  [_handlers addObject:action];
-  return action.selector;
+  NSString *stringSelector = [NSString stringWithFormat:@"handler_%lu", _handlers.count];
+  SEL selector = NSSelectorFromString(stringSelector);
+
+  [_handlers addObject:handler];
+
+  return selector;
 }
+
+#define _handler(index) \
+- (void)handler_##index \
+{                       \
+  _handlers[index]();   \
+}
+
+_handler(0);
+_handler(1);
+_handler(2);
+_handler(3);
+_handler(4);
+_handler(5);
+_handler(6);
+_handler(7);
+_handler(8);
+_handler(9);
+_handler(10);
+_handler(11);
+_handler(12);
+_handler(13);
+_handler(14);
+_handler(15);
+_handler(16);
+_handler(17);
+_handler(18);
+_handler(19);
 
 @end
 
