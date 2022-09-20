@@ -17,6 +17,7 @@ import { useAsyncMemo } from './lib/useAsyncMemo';
 import { useKnownPackagers } from './lib/useKnownPackagers';
 import { useAsyncEffect } from './lib/useAsyncEffect';
 import { useBonjourScan } from './lib/useBonjourScan';
+import { useMyIPAddresses } from './lib/useMyIPAddresses';
 
 export default function App() {
   useDeviceContext(tw);
@@ -37,6 +38,9 @@ export default function App() {
 
   const { favoritePackagers, toggleFavoritePackager } = useKnownPackagers();
 
+  const myIPAddresses = useMyIPAddresses();
+  console.log(myIPAddresses);
+
   const watchedPackagers = React.useMemo(
     () => [
       ...(isInitialRun && isDevMachine ? ['localhost:8081'] : []),
@@ -47,7 +51,6 @@ export default function App() {
   );
 
   const services = useBonjourScan();
-  console.log(services);
 
   useAsyncEffect(async () => {
     const pickedService = services.find((s) =>

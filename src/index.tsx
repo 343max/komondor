@@ -161,4 +161,8 @@ export const scan = async (
   domain: string
 ): Promise<void> => Komondor.scan(type, protocol, domain);
 
-export const stopScanning = async (): Promise<void> => Komondor.stopScanning();
+export const stopScanning = async (): Promise<void> =>
+  await Komondor.stopScanning();
+
+export const myIPAddresses = async (): Promise<string[]> =>
+  await Komondor.myIPAddresses();
