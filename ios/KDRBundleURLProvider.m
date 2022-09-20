@@ -11,6 +11,8 @@
 #import "KDRDevHelper.h"
 #import "Swizzle.h"
 
+#if KOMONDOR_ENABLED
+
 @interface KDRBundleURLProvider ()
 
 @property (strong, nonatomic) RCTBundleURLProvider *originalProvider;
@@ -186,7 +188,7 @@
 - (NSString *)guessPackagerHost
 {
 #if TARGET_OS_SIMULATOR
-    return @"localhost"
+    return @"localhost";
 #else
     if ([KDRDevHelper isRunningOnMac]) {
         return @"localhost";
@@ -235,3 +237,5 @@
 }
 
 @end
+
+#endif

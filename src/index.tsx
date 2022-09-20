@@ -7,7 +7,7 @@ import {
 import type { Spec } from './NativeKomondor';
 
 const LINKING_ERROR =
-  `The package 'better-dev-exp' doesn't seem to be linked. Make sure: \n\n` +
+  `The package 'komondor' doesn't seem to be linked. Make sure: \n\n` +
   Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
   '- You rebuilt the app after installing the package\n' +
   '- You are not using Expo managed workflow\n';
@@ -84,9 +84,81 @@ export const storeDefaults = async (
 export const loadDefaults = async (key: string): Promise<undefined | string> =>
   await Komondor.loadDefaults(key);
 
+type Event =
+  | 'queueAdded'
+  | 'bonjourBrowserWillSearch'
+  | 'bonjourBrowserDidStopSearch'
+  | 'bonjourBrowserDidNotSearch'
+  | 'bonjourBrowserDidFindService'
+  | 'bonjourBrowserDidRemoveService'
+  | 'bonjourBrowserDidResolveAddress'
+  | 'bonjourBrowserDidNotResolve';
+
+type AnEvent<T extends Event> = T;
+
+type EventHandler<A> = (body: A) => void;
+
 export function addEventListener(
-  type: 'queueAdded',
-  handler: (event: { url: string }) => void
+  type: AnEvent<'queueAdded'>,
+  handler: EventHandler<{ url: string }>
+): EmitterSubscription;
+export function addEventListener(
+  type: AnEvent<'bonjourBrowserWillSearch'>,
+  handler: EventHandler<void>
+): EmitterSubscription;
+export function addEventListener(
+  type: AnEvent<'bonjourBrowserDidStopSearch'>,
+  handler: EventHandler<void>
+): EmitterSubscription;
+export function addEventListener(
+  type: AnEvent<'bonjourBrowserDidNotSearch'>,
+  handler: EventHandler<NetServiceError>
+): EmitterSubscription;
+export function addEventListener(
+  type: AnEvent<'bonjourBrowserDidFindService'>,
+  handler: EventHandler<UnresolvedBonjourService>
+): EmitterSubscription;
+export function addEventListener(
+  type: AnEvent<'bonjourBrowserDidRemoveService'>,
+  handler: EventHandler<UnresolvedBonjourService>
+): EmitterSubscription;
+export function addEventListener(
+  type: AnEvent<'bonjourBrowserDidResolveAddress'>,
+  handler: EventHandler<BonjourService>
+): EmitterSubscription;
+export function addEventListener(
+  type: AnEvent<'bonjourBrowserDidNotResolve'>,
+  handler: EventHandler<BonjourService>
+): EmitterSubscription;
+
+export function addEventListener(
+  type: Event,
+  handler: EventHandler<any>
 ): EmitterSubscription {
   return EventEmitter.addListener(type, handler);
 }
+
+export type NetServiceError = {
+  NSNetServicesErrorCode: string;
+  NSNetServicesErrorDomain: number;
+};
+
+export type UnresolvedBonjourService = {
+  name: string;
+};
+
+export type BonjourService = UnresolvedBonjourService & {
+  fullName: string;
+  addresses: string[];
+  host: string;
+  port: number;
+  txt: Record<string, string>;
+};
+
+export const scan = async (
+  type: string,
+  protocol: string,
+  domain: string
+): Promise<void> => Komondor.scan(type, protocol, domain);
+
+export const stopScanning = async (): Promise<void> => Komondor.stopScanning();

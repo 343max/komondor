@@ -1,8 +1,8 @@
-import { command, option, optional, string } from "cmd-ts";
-import { glob } from "./glob-promise";
+import { command, option, optional, string } from 'cmd-ts';
+import { glob } from './glob-promise';
 import path from 'path';
 import xcode from 'xcode';
-import { writeFile } from "./file";
+import { writeFile } from './file';
 
 export const patchXcodeproj = command({
   name: 'patch-xcodeproj',
@@ -12,6 +12,7 @@ export const patchXcodeproj = command({
       type: optional(string),
       long: 'xcproj',
       short: 'p',
+      description: 'path to the xcodeproj to patch. Default: ios/*.xcodeproj',
     }),
   },
   handler: async ({ providedXcodeproj }) => {

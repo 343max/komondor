@@ -2,6 +2,8 @@
 
 #import "Swizzle.h"
 
+#if KOMONDOR_ENABLED
+
 extern void swizzleMethod(Class originalClass, SEL originalSelector, Class swizzledClass, SEL swizzledSelector)
 {
     Method originalMethod = class_getInstanceMethod(originalClass, originalSelector);
@@ -27,3 +29,5 @@ extern void swizzleClassMethod(Class aClass, SEL originalSelector, SEL swizzledS
     
     method_exchangeImplementations(originalMethod, swizzledMethod);
 }
+
+#endif

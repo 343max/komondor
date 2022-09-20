@@ -4,6 +4,7 @@ import { run, subcommands } from 'cmd-ts';
 import { patchXcodeproj } from '../lib/patchXcodeproj';
 import { patchInfoPlistCommand } from '../lib/patchInfoPlistCommand';
 import { patchPodsCommand } from '../lib/patchPodsCommand';
+import { startMetroCommand } from '../lib/startMetroCommand';
 
 const commands = subcommands({
   name: 'komondor',
@@ -11,6 +12,7 @@ const commands = subcommands({
     'patch-info-plist': patchInfoPlistCommand,
     'patch-pods': patchPodsCommand,
     'patch-xcodeproj': patchXcodeproj,
+    'start': startMetroCommand,
   },
 });
 

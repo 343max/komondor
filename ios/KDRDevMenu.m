@@ -10,6 +10,8 @@
 #import <React/RCTDevMenu.h>
 #endif
 
+#if KOMONDOR_ENABLED
+
 @interface RCTDevMenu ()
 - (NSArray<RCTDevMenuItem *> *)_menuItemsToPresent;
 @end
@@ -286,3 +288,5 @@ _handler(19);
 
 
 @end
+
+#endif

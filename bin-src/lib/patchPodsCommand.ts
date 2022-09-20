@@ -1,12 +1,19 @@
-import { command } from "cmd-ts";
-import { readFile, writeFile } from "./file";
-import { glob } from "./glob-promise";
-import { ConfigEnvKey, readConfig } from "./package-json";
+import { command, option, optional, string } from 'cmd-ts';
+import { readFile, writeFile } from './file';
+import { glob } from './glob-promise';
+import { ConfigEnvKey, readConfig } from './package-json';
 
 export const patchPodsCommand = command({
   name: 'patch-pods',
-  args: {},
-  handler: async () => {
+  args: {
+    customPodsDir: option({
+      type: optional(string),
+      long: 'pods',
+      short: 'p',
+      description: 'path to the Pods directory. Default: ios/Pods',
+    }),
+  },
+  handler: async ({ customPodsDir }) => {
     const matchingLine = (
       file: string,
       matcher: { [Symbol.match](string: string): RegExpMatchArray | null }
@@ -20,9 +27,17 @@ export const patchPodsCommand = command({
       protocolHandler,
     } = await readConfig();
 
+    const podsDir = customPodsDir ?? 'ios/Pods';
+
     const configs = await glob(
-      `ios/Pods/Target Support Files/*/*.${releaseConfiguration.toLowerCase()}.xcconfig`
+      `${podsDir}/Target Support Files/*/*.${releaseConfiguration.toLowerCase()}.xcconfig`
     );
+
+    if (configs.length === 0) {
+      throw new Error(
+        `no Cocoapods xcconfigs found in ${podsDir}. Please make sure you called pod install and check the pods argument`
+      );
+    }
 
     const patchComment = `// patched in by komondor. Revert by running pod install again`;
 

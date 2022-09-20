@@ -15,6 +15,8 @@ export interface Spec extends TurboModule {
   getOpenURLQueue(): Promise<string[]>;
   storeDefaults(key: string, value: string): Promise<void>;
   loadDefaults(key: string): Promise<undefined | string>;
+  scan(type: string, protocol: string, domain: string): Promise<void>;
+  stopScanning(): Promise<void>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('Komondor');

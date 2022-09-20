@@ -1,6 +1,7 @@
 #import "KDRMainWindowHandler.h"
-
 #import "AppKitHeaders.h"
+
+#if KOMONDOR_ENABLED
 
 @interface KDRMainWindowHandler ()
 
@@ -107,3 +108,5 @@
 }
 
 @end
+
+#endif

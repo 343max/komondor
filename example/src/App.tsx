@@ -18,6 +18,7 @@ import { parseAppUrl } from './lib/parseAppUrl';
 import { useAsyncMemo } from './lib/useAsyncMemo';
 import { useKnownPackagers } from './lib/useKnownPackagers';
 import { useAsyncEffect } from './lib/useAsyncEffect';
+import { useBonjourScan } from './lib/useBonjourScan';
 
 export default function App() {
   useDeviceContext(tw);
@@ -56,6 +57,9 @@ export default function App() {
     ...watchedPackagers,
     ...recentPackagers,
   ]);
+
+  const services = useBonjourScan();
+  console.log(services);
 
   useAsyncEffect(async () => {
     const pickedPackager = runningPackagers.find((p) =>

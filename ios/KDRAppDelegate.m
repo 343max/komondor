@@ -10,22 +10,16 @@
 
 #import <React/RCTBridge.h>
 
-@interface KDRAppDelegate ()
-
-+ (void)swizzle:(NSString *)delegateClassName;
-
-@end
-
-static NSString *originalDelegateClassName;
-
 extern int KDRApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSString * _Nullable principalClassName, NSString * _Nullable delegateClassName)
 {
-#if DEBUG
+#if KOMONDOR_ENABLED
     [KDRAppDelegate swizzle:delegateClassName];
     [[KDRDevHelper sharedHelper] setupDevHelper];
 #endif
     return UIApplicationMain(argc, argv, principalClassName, delegateClassName);
 }
+
+#if KOMONDOR_ENABLED
 
 @implementation KDRAppDelegate
 
@@ -108,3 +102,5 @@ extern int KDRApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
 }
 
 @end
+
+#endif

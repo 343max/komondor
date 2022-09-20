@@ -15,7 +15,7 @@ export const useRunningPackagers = (packagers: string[]): string[] => {
       )
     ).filter((v) => v !== null);
     setRunning(r as string[]);
-  }, 300);
+  }, 30000);
 
   return running;
 };

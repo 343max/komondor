@@ -2,6 +2,8 @@
 
 #import "array_map.h"
 
+#if KOMONDOR_ENABLED
+
 NSString *const KDROpenURLQueueChangeNotification = @"KDROpenURLQueueChangeNotification";
 
 @implementation KDROpenURLQueue
@@ -51,3 +53,5 @@ NSString *const KDROpenURLQueueChangeNotification = @"KDROpenURLQueueChangeNotif
 }
 
 @end
+
+#endif

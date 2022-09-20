@@ -4,6 +4,8 @@
 #import "KDRMainWindowHandler.h"
 #import "KDRBundleURLProvider.h"
 
+#if KOMONDOR_ENABLED
+
 @interface KDRDevHelper ()
 
 @property (strong, nonatomic) KDRDevMenu *devMenu;
@@ -104,3 +106,5 @@
 }
 
 @end
+
+#endif
