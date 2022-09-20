@@ -1,23 +1,29 @@
 import { addEventListener, BonjourService, scan, stopScanning } from 'komondor';
 import React from 'react';
+import type { EmitterSubscription } from 'react-native';
 
 export const useBonjourScan = () => {
   const [services, setServices] = React.useState<BonjourService[]>([]);
 
   React.useEffect(() => {
+    const listeners: EmitterSubscription[] = [];
+
     const f = async () => {
-      const didResolveAddressListener = await addEventListener(
-        'bonjourBrowserDidResolveAddress',
-        (service) => {
-          console.log({ didResolveAddress: service });
-        }
+      listeners.push(
+        await addEventListener('bonjourBrowserDidResolveAddress', (service) => {
+          if (service.txt.service === 'komondor') {
+            setServices([
+              service,
+              ...services.filter((s) => s.name === service.name),
+            ]);
+          }
+        })
       );
 
-      const didRemoveServiceListener = await addEventListener(
-        'bonjourBrowserDidRemoveService',
-        (service) => {
-          console.log({ didRemoverService: service });
-        }
+      listeners.push(
+        await addEventListener('bonjourBrowserDidRemoveService', (service) => {
+          setServices(services.filter((s) => s.name === service.name));
+        })
       );
 
       await scan('http', 'tcp', '');
@@ -25,7 +31,10 @@ export const useBonjourScan = () => {
     f();
 
     return () => {
+      listeners.forEach((l) => l.remove());
       stopScanning();
     };
   }, []);
+
+  return services;
 };

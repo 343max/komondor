@@ -9,9 +9,7 @@ import {
 } from 'komondor';
 import { List } from './List';
 import { tw } from './tw';
-import { useRunningPackagers } from './lib/useRunningPackagers';
 import { useDeviceContext } from 'twrnc';
-import { WaitForPackager } from './WaitForPackager';
 import { StarButton } from './StarButton';
 import { useHandleUrl } from './lib/useHandleUrl';
 import { parseAppUrl } from './lib/parseAppUrl';
@@ -37,12 +35,7 @@ export default function App() {
   const isDevMachine = useAsyncMemo(supportsLocalDevelopment, [], false);
   const isInitialRun = useAsyncMemo(hasNotSwitched, [], false);
 
-  const {
-    recentPackagers,
-    addRecentPackager,
-    favoritePackagers,
-    toggleFavoritePackager,
-  } = useKnownPackagers();
+  const { favoritePackagers, toggleFavoritePackager } = useKnownPackagers();
 
   const watchedPackagers = React.useMemo(
     () => [
@@ -53,57 +46,43 @@ export default function App() {
     [isDevMachine, isInitialRun, favoritePackagers, requestedPackager]
   );
 
-  const runningPackagers = useRunningPackagers([
-    ...watchedPackagers,
-    ...recentPackagers,
-  ]);
-
   const services = useBonjourScan();
   console.log(services);
 
   useAsyncEffect(async () => {
-    const pickedPackager = runningPackagers.find((p) =>
-      watchedPackagers.includes(p)
+    const pickedService = services.find((s) =>
+      watchedPackagers.includes(s.name)
     );
 
-    if (pickedPackager !== undefined) {
-      await addRecentPackager(pickedPackager);
-      switchToPackager(pickedPackager).catch((exception) =>
-        console.log(exception)
-      );
+    if (pickedService !== undefined) {
+      switchToPackager(
+        `${pickedService.addresses[0]}:${pickedService.port}`
+      ).catch((exception) => console.log(exception));
     }
-  }, [runningPackagers, watchedPackagers]);
+  }, [services, watchedPackagers]);
 
   const packagerItems = React.useMemo(
     () =>
-      recentPackagers.map((host) => {
-        const running = runningPackagers.includes(host);
+      services.map((service) => {
         return {
-          title: host,
-          disabled: !running,
+          title: service.name,
           accessoryItem: (
             <StarButton
-              starred={favoritePackagers.includes(host)}
+              starred={favoritePackagers.includes(service.name)}
               style={tw`mr-2`}
-              onPress={() => toggleFavoritePackager(host)}
+              onPress={() => toggleFavoritePackager(service.name)}
             />
           ),
         };
       }),
-    [
-      recentPackagers,
-      runningPackagers,
-      favoritePackagers,
-      toggleFavoritePackager,
-    ]
+    [services, favoritePackagers, toggleFavoritePackager]
   );
 
   return (
     <SafeAreaView style={tw`bg-slate-200 dark:bg-slate-700`}>
       <ScrollView style={tw`w-full h-full p-3 `}>
-        {watchedPackagers.length > 0 ? <WaitForPackager /> : null}
         <List
-          header="Recent Dev Endpoints"
+          header="Running Packagers"
           items={packagerItems}
           onPress={({ title }) => {
             switchToPackager(title).catch((exception) =>
