@@ -65,6 +65,7 @@ export default function App() {
       services.map((service) => {
         return {
           title: service.name,
+          service,
           accessoryItem: (
             <StarButton
               starred={favoritePackagers.includes(service.name)}
@@ -83,9 +84,9 @@ export default function App() {
         <List
           header="Running Packagers"
           items={packagerItems}
-          onPress={({ title }) => {
-            switchToPackager(title).catch((exception) =>
-              console.log(exception)
+          onPress={({ service }) => {
+            switchToPackager(`${service.addresses[0]}:${service.port}`).catch(
+              (exception) => console.log(exception)
             );
           }}
         />
