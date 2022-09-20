@@ -91,14 +91,12 @@
 
 - (void)netServiceDidResolveAddress:(NSNetService *)sender
 {
-    NSLog(@"netServiceDidResolveAddress: %@", sender);
     [_komondor sendEventWithName:@"bonjourBrowserDidResolveAddress"
                             body:[KDRNetServiceSerializer serializeServiceToDictionary:sender]];
 }
 
 - (void)netService:(NSNetService *)sender didNotResolve:(NSDictionary<NSString *,NSNumber *> *)errorDict
 {
-    NSLog(@"didNotResolve: %@ %@", sender, errorDict);
     [_komondor sendEventWithName:@"bonjourBrowserDidNotResolve"
                             body:
          @{

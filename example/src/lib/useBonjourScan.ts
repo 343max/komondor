@@ -12,9 +12,9 @@ export const useBonjourScan = () => {
       listeners.push(
         await addEventListener('bonjourBrowserDidResolveAddress', (service) => {
           if (service.txt.service === 'komondor') {
-            setServices([
+            setServices((ses) => [
               service,
-              ...services.filter((s) => s.name === service.name),
+              ...ses.filter((s) => s.name !== service.name),
             ]);
           }
         })
@@ -22,7 +22,7 @@ export const useBonjourScan = () => {
 
       listeners.push(
         await addEventListener('bonjourBrowserDidRemoveService', (service) => {
-          setServices(services.filter((s) => s.name === service.name));
+          setServices((ses) => ses.filter((s) => s.name !== service.name));
         })
       );
 
@@ -35,6 +35,8 @@ export const useBonjourScan = () => {
       stopScanning();
     };
   }, []);
+
+  console.log(services.map((s) => s.name));
 
   return services;
 };
