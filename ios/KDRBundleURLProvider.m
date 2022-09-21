@@ -97,13 +97,17 @@
 
 - (NSURL *)entryURL
 {
-    return [RCTBundleURLProvider jsBundleURLForBundleRoot:@"index"
-                                             packagerHost:[self packagerServerHostPort]
-                                           packagerScheme:[self packagerScheme]
-                                                enableDev:[self enableDev]
-                                       enableMinification:[self enableMinification]
-                                              modulesOnly:NO
-                                                runModule:YES];
+    if ([_packagerURL.scheme isEqualToString:@"file"]) {
+        return _packagerURL;
+    } else {
+        return [RCTBundleURLProvider jsBundleURLForBundleRoot:@"index"
+                                                 packagerHost:[self packagerServerHostPort]
+                                               packagerScheme:[self packagerScheme]
+                                                    enableDev:[self enableDev]
+                                           enableMinification:[self enableMinification]
+                                                  modulesOnly:NO
+                                                    runModule:YES];
+    }
 }
 
 - (NSString *)packagerScheme
@@ -156,7 +160,7 @@
 
 - (void)switchToBundle:(NSURL *)bundle
 {
-    
+    // TODO
 }
 
 - (void)switchToPackagerHost:(NSString *)host port:(NSUInteger)port scheme:(NSString *)scheme
@@ -185,37 +189,13 @@
     [self reloadWithBundleURL:url];
 }
 
-- (NSString *)guessPackagerHost
-{
-#if TARGET_OS_SIMULATOR
-    return @"localhost";
-#else
-    if ([KDRDevHelper isRunningOnMac]) {
-        return @"localhost";
-    } else {
-        static NSString *ipGuess;
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            NSString *ipPath = [[NSBundle mainBundle] pathForResource:@"ip" ofType:@"txt"];
-            ipGuess =
-            [[NSString stringWithContentsOfFile:ipPath encoding:NSUTF8StringEncoding
-                                          error:nil] stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]];
-        });
-        
-        NSString *host = ipGuess ?: @"localhost";
-        return host;
-    }
-#endif
-}
-
-- (NSURL *)pickerDevelopementUrl
-{
-    return [NSURL URLWithString:[NSString stringWithFormat:@"http://%@:8042/", [self guessPackagerHost]]];
-}
-
 - (NSURL *)pickerBundleUrl
 {
-    return [self pickerDevelopementUrl];
+#if KOMONDOR_DEV_PACKAGER
+    return [NSURL URLWithString:@"http://localhost:8042/"];
+#else
+    return [[NSBundle mainBundle] URLForResource:@"komondor" withExtension:@"jsbundle"];
+#endif
 }
 
 - (BOOL)showsInternalPicker
