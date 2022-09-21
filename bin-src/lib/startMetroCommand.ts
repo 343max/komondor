@@ -26,7 +26,7 @@ export const startMetroCommand = command({
       type: optional(string),
       long: 'command',
       short: 'c',
-      env: 'KOMONDOR_COMMAND',
+      env: 'KOMONDOR_PACKAGER_COMMAND',
       description: 'Command to run. Default: `npx react-native start`',
     }),
   },
