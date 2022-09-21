@@ -4,6 +4,7 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTReloadCommand.h>
 #import <React/RCTUtils.h>
+#import <React/RCTDevSettings.h>
 #if __has_include(<React/RCTDevMenu.h>)
 #import <React/RCTDevMenu.h>
 #endif
@@ -57,10 +58,6 @@
         _originalProvider = [[RCTBundleURLProvider alloc] init];
         
         [self configureInternalPicker];
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(addDevMenuItem:)
-                                                     name:RCTJavaScriptWillStartExecutingNotification
-                                                   object:nil];
     }
     
     return self;
@@ -69,20 +66,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)addDevMenuItem:(NSNotification *)notification
-{
-#if __has_include(<React/RCTDevMenu.h>)
-    RCTBridge *bridge = notification.object;
-    
-    _resetBundleEndpointMenuItem = [RCTDevMenuItem buttonItemWithTitleBlock:^NSString *{
-        return @"🏠 Bundle Picker";
-    } handler:^{
-        [[KDRBundleURLProvider sharedProvider] switchToInternalPicker];
-    }];
-    [bridge.devMenu addItem:_resetBundleEndpointMenuItem];
-#endif
 }
 
 + (KDRBundleURLProvider *)sharedProvider
@@ -179,20 +162,19 @@
 - (void)switchToInternalPicker
 {
     [self configureInternalPicker];
-    NSURL *url = [RCTBundleURLProvider jsBundleURLForBundleRoot:@"index"
-                                                   packagerHost:[self packagerServerHostPort]
-                                                 packagerScheme:_packagerURL.scheme
-                                                      enableDev:YES
-                                             enableMinification:NO
-                                                    modulesOnly:NO
-                                                      runModule:YES];
-    [self reloadWithBundleURL:url];
+    [self reloadWithBundleURL:_packagerURL];
 }
 
 - (NSURL *)pickerBundleUrl
 {
 #if KOMONDOR_DEV_PACKAGER
-    return [NSURL URLWithString:@"http://localhost:8042/"];
+    return [RCTBundleURLProvider jsBundleURLForBundleRoot:@"index"
+                                             packagerHost:@"localhost:8042"
+                                           packagerScheme:@"http"
+                                                enableDev:YES
+                                       enableMinification:NO
+                                              modulesOnly:NO
+                                                runModule:YES];
 #else
     return [[NSBundle mainBundle] URLForResource:@"komondor" withExtension:@"jsbundle"];
 #endif
@@ -206,11 +188,19 @@
 - (void)configureInternalPicker
 {
     _packagerURL = [self pickerBundleUrl];
+    [self setDevSettingsEnalbedForURL:_packagerURL];
+}
+
+- (void)setDevSettingsEnalbedForURL:(NSURL *)bundleURL
+{
+    BOOL enableDevSettings = ![bundleURL.scheme isEqualToString:@"file"];
+    RCTDevSettingsSetEnabled(enableDevSettings);
 }
 
 - (void)reloadWithBundleURL:(NSURL *)bundleURL
 {
     RCTExecuteOnMainQueue(^{
+        [self setDevSettingsEnalbedForURL:bundleURL];
         RCTReloadCommandSetBundleURL(bundleURL);
         RCTTriggerReloadCommandListeners(@"Dev switched bundle");
     });

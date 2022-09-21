@@ -5,6 +5,7 @@
 #import "KDRMainWindowHandler.h"
 
 #import <React/RCTBridge.h>
+#import <React/RCTDevSettings.h>
 
 #if __has_include(<React/RCTDevMenu.h>)
 #import <React/RCTDevMenu.h>
@@ -92,6 +93,9 @@ _handler(19);
 @property (strong, nonatomic) MenuResponder *menuResponder;
 @property (weak, nonatomic, readonly) RCTBridge *bridge;
 
++ (BOOL)devSettingsEnabledForBridge:(RCTBridge *)bridge;
++ (NSArray<RCTDevMenuItem *> *)devMenuItemsForBridge:(RCTBridge *)bridge;
+
 @end
 
 @interface RCTDevMenuItem ()
@@ -139,7 +143,9 @@ _handler(19);
   
   __weak KDRDevMenu *weakSelf = self;
   SEL showDevMenuAction = [_menuResponder generateSelector:^{
-    [[weakSelf rctDevMenu] show];
+    if ([KDRDevMenu devSettingsEnabledForBridge:weakSelf.bridge]) {
+      [weakSelf.bridge.devMenu show];
+    }
   }];
   
   UICommand *showDevMenu = [UIKeyCommand commandWithTitle:@"Show RN Dev Menu"
@@ -228,25 +234,22 @@ _handler(19);
   return _menuResponder;
 }
 
-#if __has_include(<React/RCTDevMenu.h>)
-- (RCTDevMenu *)rctDevMenu
++ (BOOL)devSettingsEnabledForBridge:(RCTBridge *)bridge
 {
-  return [_bridge moduleForName:@"DevMenu"];
+  return bridge.devSettings != nil;
 }
 
+#if __has_include(<React/RCTDevMenu.h>)
 + (NSArray<RCTDevMenuItem *> *)devMenuItemsForBridge:(RCTBridge *)bridge
 {
-  RCTDevMenu *devMenu = [bridge moduleForName:@"DevMenu"];
-  return [devMenu _menuItemsToPresent];
+  if ([self devSettingsEnabledForBridge:bridge]) {
+    return [bridge.devMenu _menuItemsToPresent];
+  } else {
+    return @[];
+  }
 }
 
 #else
-- (RCTDevMenu *)rctDevMenu
-{
-  return nil;
-}
-
-
 + (NSArray<RCTDevMenuItem *> *)devMenuItemsForBridge:(RCTBridge *)bridge
 {
   return @[];

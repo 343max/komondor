@@ -15,8 +15,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)setupWithBuilder:(id<UIMenuBuilder>)builder NS_AVAILABLE_IOS(13.0);
 
-+ (NSArray<RCTDevMenuItem *> *)devMenuItemsForBridge:(RCTBridge *)bridge;
-
 - (UIResponder *)nextResponderInsteadOfResponder:(UIResponder *)nextResponder;
 
 @end
