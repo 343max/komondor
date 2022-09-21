@@ -4,17 +4,18 @@ set -ex
 
 # package up komondor and test install
 
-yarn build:bin
+yarn run prepare
 npm pack
-rm -rf /tmp/testinstall
 
 cd ~/Projects/PawdonMe/
 
-git reset --hard
+# git reset --hard
 
 npm i ~/Projects/komondor/komondor-*.tgz
 
-npx komondor patch-xcodeproj
-
 cd ios
 pod install
+
+cd ..
+npx komondor patch-xcodeproj
+npx komondor patch-pods
