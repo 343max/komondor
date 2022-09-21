@@ -3,6 +3,8 @@
 
 @implementation Komondor (Bonjour)
 
+#if KOMONDOR_ENABLED
+
 RCT_REMAP_METHOD(scan, scan:(NSString *__nonnull)type
                    protocol:(NSString *__nonnull)protocol
                      domain:(NSString *__nonnull)domain
@@ -27,5 +29,6 @@ RCT_REMAP_METHOD(stopScanning, stopScanningWithResolver:(RCTPromiseResolveBlock)
     resolve(nil);
 }
 
+#endif
 
 @end
