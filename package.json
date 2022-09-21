@@ -20,7 +20,8 @@
     "!ios/build",
     "!**/__tests__",
     "!**/__fixtures__",
-    "!**/__mocks__"
+    "!**/__mocks__",
+    "example/src"
   ],
   "scripts": {
     "test": "jest",
@@ -28,13 +29,11 @@
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
     "build:bin": "tsc -b tsconfig.bin.json --force",
     "build:rn": "bob build",
-    "prepare": "yarn build:bin && yarn build:rn",
+    "build:ui": "yarn --cwd example build",
+    "prepare": "yarn build:bin && yarn build:rn && yarn build:ui",
     "release": "release-it",
     "example": "yarn --cwd example",
-    "bootstrap": "yarn example && yarn && yarn example pods",
-    "try-bde-patch": "yarn build:bin && cd ../HelloBDE && npm run patch",
-    "hello-bde-pod": "cd ../HelloBDE/ios && pod install",
-    "try-pod-bde-patch": "yarn hello-bde-pod && yarn build:bin && cd ../HelloBDE && npm run patch-pods"
+    "bootstrap": "yarn example && yarn && yarn example pods"
   },
   "keywords": [
     "react-native",
