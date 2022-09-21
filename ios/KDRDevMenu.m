@@ -3,6 +3,7 @@
 #import "KDRDevHelper.h"
 #import "array_map.h"
 #import "KDRMainWindowHandler.h"
+#import "KDRBundleURLProvider.h"
 
 #import <React/RCTBridge.h>
 #import <React/RCTDevSettings.h>
@@ -141,11 +142,20 @@ _handler(19);
   
   stayOnTop.state = [KDRDevHelper sharedHelper].floatOnTopSetting ? UIMenuElementStateOn : UIMenuElementStateOff;
   
+  SEL packagePickerMenuAction = [_menuResponder generateSelector:^{
+    [[KDRBundleURLProvider sharedProvider] switchToInternalPicker];
+  }];
+  
+  UICommand *packagePickerMenu = [UICommand commandWithTitle:@"Show Package Picker 🐶"
+                                                       image:nil
+                                                      action:packagePickerMenuAction
+                                                propertyList:nil];
+  
+  packagePickerMenu.attributes = [KDRBundleURLProvider sharedProvider].showsInternalPicker ? UIMenuElementAttributesDisabled : 0;
+  
   __weak KDRDevMenu *weakSelf = self;
   SEL showDevMenuAction = [_menuResponder generateSelector:^{
-    if ([KDRDevMenu devSettingsEnabledForBridge:weakSelf.bridge]) {
-      [weakSelf.bridge.devMenu show];
-    }
+    [weakSelf.bridge.devMenu show];
   }];
   
   UICommand *showDevMenu = [UIKeyCommand commandWithTitle:@"Show RN Dev Menu"
@@ -155,6 +165,8 @@ _handler(19);
                                             modifierFlags:UIKeyModifierCommand | UIKeyModifierControl
                                              propertyList:nil];
   
+  showDevMenu.attributes =  [KDRDevMenu devSettingsEnabledForBridge:weakSelf.bridge] ? 0 : UIMenuElementAttributesDisabled;
+
   NSArray *devMenuItems = array_map([KDRDevMenu devMenuItemsForBridge:_bridge], ^id _Nonnull(RCTDevMenuItem *item, NSUInteger idx) {
     NSString *keyEquivalent = nil;
     NSString *title = [item title];
@@ -220,6 +232,7 @@ _handler(19);
     stayOnTop,
     resizeMenu,
     windowAlphaMenu,
+    packagePickerMenu,
     showDevMenu,
   ] arrayByAddingObjectsFromArray:devMenuItems];
 
