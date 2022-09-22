@@ -4,7 +4,9 @@ import { glob } from './glob-promise';
 import { ConfigEnvKey, readConfig } from './package-json';
 
 export const patchPodsCommand = command({
-  name: 'patch-pods',
+  name: 'patch-xcconfig',
+  description:
+    'patches the cocoapods xcconfig files to enable Komondor for that build. Should be run on CI builds after pod install.',
   args: {
     customPodsDir: option({
       type: optional(string),

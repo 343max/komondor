@@ -1,9 +1,11 @@
-import { command, positional, string } from "cmd-ts";
-import { ConfigEnvKey } from "./package-json";
-import { readPlistFile, writePlistFile } from "./plist";
+import { command, positional, string } from 'cmd-ts';
+import { ConfigEnvKey } from './package-json';
+import { readPlistFile, writePlistFile } from './plist';
 
 export const patchInfoPlistCommand = command({
   name: 'patch-info-plist',
+  description:
+    'patches the Info.plist file of the app during build. Should only be run by the Xcode build process.',
   args: {
     plistPath: positional({ type: string, displayName: 'plist path' }),
   },

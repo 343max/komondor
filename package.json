@@ -33,7 +33,8 @@
     "prepare": "yarn build:bin && yarn build:rn && yarn build:ui",
     "release": "release-it",
     "example": "yarn --cwd example",
-    "bootstrap": "yarn example && yarn && yarn example pods"
+    "bootstrap": "yarn example && yarn && yarn example pods",
+    "cli": "ts-node --transpile-only --project tsconfig.bin.json bin-src/bin/komondor-cli.ts"
   },
   "keywords": [
     "react-native",

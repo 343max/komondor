@@ -7,11 +7,13 @@ set -ex
 yarn run prepare
 npm pack
 
+cp komondor-*.tgz ~/Projects/PawdonMe/
+
 cd ~/Projects/PawdonMe/
 
 # git reset --hard
 
-npm i ~/Projects/komondor/komondor-*.tgz
+npm i komondor-*.tgz
 
 cd ios
 pod install

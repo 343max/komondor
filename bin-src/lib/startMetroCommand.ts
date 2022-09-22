@@ -1,6 +1,6 @@
 import Bonjour from 'bonjour-service';
 import { command, number, option, optional, string } from 'cmd-ts';
-import { readPackageJson } from './package-json';
+import { readConfig, readPackageJson } from './package-json';
 import { spawn } from 'child_process';
 import { createHash } from 'crypto';
 import { getComputerName } from './getComputerName';
@@ -31,10 +31,10 @@ export const startMetroCommand = command({
     }),
   },
   handler: async ({ customPort, customStartCommand }) => {
-    const port = customPort ?? generatePort();
-    const command = `${
-      customStartCommand ?? 'npx react-native start'
-    } --port ${port}`;
+    const { startCmd, metroPort } = await readConfig();
+    const port =
+      customPort ?? (metroPort ? parseInt(`${metroPort}`) : generatePort());
+    const command = `${customStartCommand ?? startCmd} --port ${port}`;
     const bonjour = new Bonjour();
     const packageJson = await readPackageJson();
     const appName = `${packageJson.name}`;

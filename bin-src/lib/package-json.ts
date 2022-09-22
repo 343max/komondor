@@ -1,4 +1,4 @@
-import { readFile } from "./file";
+import { readFile } from './file';
 
 export const readPackageJson = async () => {
   if (process.env.npm_package_json === undefined) {
@@ -21,7 +21,8 @@ export type Config = {
   releaseConfiguration: string;
   debugConfiguration: string;
   startCmd: string;
-  metroPort: number;
+  metroPort?: number | string;
+  moduleName?: string;
 };
 
 export const ConfigEnvKey = {
@@ -36,5 +37,6 @@ export const readConfig = async (): Promise<Config> => ({
   protocolHandler: '$(PRODUCT_BUNDLE_IDENTIFIER).komondor',
   releaseConfiguration: 'Release',
   debugConfiguration: 'Debug',
+  startCmd: 'npx react-native start',
   ...(await readPackageJson()).komondor,
 });
