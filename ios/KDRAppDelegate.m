@@ -7,6 +7,7 @@
 #import "Swizzle.h"
 #import "KDROpenURLQueue.h"
 #import "Komondor.h"
+#import "RCTSRWebSocket+Komondor.h"
 
 #import <React/RCTBridge.h>
 
@@ -14,6 +15,8 @@ extern int KDRApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
 {
 #if KOMONDOR_ENABLED
     [KDRAppDelegate swizzle:delegateClassName];
+    [RCTSRWebSocket swizzle];
+    
     [[KDRDevHelper sharedHelper] setupDevHelper];
 #endif
     return UIApplicationMain(argc, argv, principalClassName, delegateClassName);
