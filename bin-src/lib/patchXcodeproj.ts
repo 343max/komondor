@@ -97,9 +97,9 @@ export const patchXcodeproj = command({
         '  echo "komondor not enabled, skipping"',
         'else',
         '  WITH_ENVIRONMENT="../node_modules/react-native/scripts/xcode/with-environment.sh"',
-        '  KOMONDOR_CLI="../node_modules/komondor/dist/bin/komondor-cli.js patch-info-plist ${TARGET_BUILD_DIR}/${INFOPLIST_PATH}"',
+        '  KOMONDOR_CLI="../node_modules/komondor/dist/bin/komondor-cli.js patch-info-plist"',
         '  source $WITH_ENVIRONMENT',
-        '  $NODE_BINARY $KOMONDOR_CLI',
+        '  $NODE_BINARY $KOMONDOR_CLI "$CONFIGURATION_BUILD_DIR/$INFOPLIST_PATH"',
         'fi',
       ].join('\n')
     );
@@ -110,7 +110,7 @@ export const patchXcodeproj = command({
         '  echo "komondor not enabled, skipping"',
         'else',
         '  echo "Adding komondor.jsbundle package"',
-        `  sed "s/bf4eb35237c40d159eaad6d2965df9a3b0934879/${moduleName}/" ../node_modules/komondor/dist/ui/main.jsbundle > \${TARGET_BUILD_DIR}/komondor.jsbundle`,
+        `  sed "s/bf4eb35237c40d159eaad6d2965df9a3b0934879/${moduleName}/" ../node_modules/komondor/dist/ui/main.jsbundle > "$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/komondor.jsbundle"`,
         'fi',
       ].join('\n')
     );
