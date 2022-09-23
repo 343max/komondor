@@ -45,7 +45,11 @@ export const patchPodsCommand = command({
       env: 'KOMONDOR_APP_MODULE_NAME',
     }),
   },
-  handler: async ({ customPodsDir, customModuleName }) => {
+  handler: async ({
+    customPodsDir,
+    customBundleIdentifier,
+    customModuleName,
+  }) => {
     const matchingLine = (
       file: string,
       matcher: { [Symbol.match](string: string): RegExpMatchArray | null }
@@ -55,7 +59,7 @@ export const patchPodsCommand = command({
       releaseConfiguration,
       debugConfiguration,
       displayName,
-      bundleIdentifier,
+      bundleIdentifier: packageBundleIdentifier,
       protocolHandler,
       moduleName: configModuleName,
     } = await readConfig();
@@ -66,6 +70,14 @@ export const patchPodsCommand = command({
     if (typeof moduleName !== 'string') {
       throw new Error(
         "moduleName couldn't be guessed. config in package.json -> komondor.moduleName or --module-name or env KOMONDOR_APP_MODULE_NAME"
+      );
+    }
+
+    const bundleIdentifier = customBundleIdentifier ?? packageBundleIdentifier;
+
+    if (typeof bundleIdentifier !== 'string') {
+      throw new Error(
+        'bundleIdentifier no set. configure in package.json -> komondor.bundleIdentifier or --bundle-identifier'
       );
     }
 
@@ -126,7 +138,7 @@ export const patchPodsCommand = command({
             `${ConfigEnvKey.komondorEnabled} = YES`,
             'SKIP_BUNDLING = YES',
             'RCT_NO_LAUNCH_PACKAGER = YES',
-            'PRODUCT_BUNDLE_IDENTIFIER = ${ConfigEnvKey.bundleIdentifier}',
+            `PRODUCT_BUNDLE_IDENTIFIER = \$${ConfigEnvKey.bundleIdentifier}`,
             `${ConfigEnvKey.displayName} = ${displayName}`,
             `${ConfigEnvKey.bundleIdentifier} = ${bundleIdentifier}`,
             `${ConfigEnvKey.protocolHandler} = ${protocolHandler}`,
