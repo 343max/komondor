@@ -1,4 +1,4 @@
-export declare module 'xcode' {
+declare module 'xcode' {
   type BuildPhaseType =
     | 'PBXCopyFilesBuildPhase'
     | 'PBXResourcesBuildPhase'
@@ -45,11 +45,32 @@ export declare module 'xcode' {
       productReference: any;
       productType: string;
       buildConfigurationList: string;
+      buildConfigurationList_comment: string;
       buildPhases: { comment: string; value: string }[];
       buildRules: any[];
       dependencies: any[];
     };
   };
+
+  type BuildConfigurationSectionItem = {
+    name: string;
+    buildSettings: Record<string, string>;
+  };
+
+  type BuildConfigurationSection = Record<
+    string,
+    BuildConfigurationSectionItem
+  >;
+
+  type Configuration = { value: string; comment: string };
+
+  type ConfigurationListItem = {
+    buildConfigurations: Configuration[];
+    defaultConfigurationIsVisible: 0 | 1;
+    defaultConfigurationName: string;
+  };
+
+  type ConfigurationList = Record<string, ConfigurationListItem>;
 
   interface PbxProject {
     parseSync();
@@ -64,6 +85,8 @@ export declare module 'xcode' {
 
     pbxNativeTargetSection(): Record<string, NativeTargetSection>;
     getTarget(productType: ProductType): NativeTargetSection | null;
+    pbxXCBuildConfigurationSection(): BuildConfigurationSection;
+    pbxXCConfigurationList(): ConfigurationList;
   }
 
   function project(filename: string): PbxProject;

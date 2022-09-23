@@ -2,19 +2,8 @@ import { command, option, optional, string } from 'cmd-ts';
 import { glob } from './glob-promise';
 import path from 'path';
 import xcode from 'xcode';
-import { writeFile, readFile } from './file';
-import { dirname, join } from 'path';
-import { readConfig } from './package-json';
-
-const guessModuleName = async () => {
-  if (typeof process.env.npm_package_json !== 'string') {
-    return undefined;
-  }
-  const appJsonPath = join(dirname(process.env.npm_package_json), 'app.json');
-  const json = JSON.parse(await readFile(appJsonPath));
-  const name = json.name;
-  return typeof name === 'string' ? name : undefined;
-};
+import { writeFile } from './file';
+import { ConfigEnvKey, readConfig } from './package-json';
 
 export const patchXcodeproj = command({
   name: 'patch-xcodeproj',
@@ -26,33 +15,14 @@ export const patchXcodeproj = command({
       short: 'p',
       description: 'path to the xcodeproj to patch. Default: ios/*.xcodeproj',
     }),
-    customModuleName: option({
-      type: optional(string),
-      long: 'module-name',
-      short: 'm',
-      description:
-        'name of the module that is expected by the native app. (see app.json -> name)',
-      env: 'KOMONDOR_APP_MODULE_NAME',
-    }),
   },
-  handler: async ({ providedXcodeproj, customModuleName }) => {
+  handler: async ({ providedXcodeproj }) => {
     const xcodeProj = providedXcodeproj ?? (await glob('ios/*.xcodeproj'))[0];
     if (xcodeProj === undefined) {
       throw new Error('no xcodeproj found');
     }
 
-    const { moduleName: configModuleName } = await readConfig();
-
-    const moduleName =
-      customModuleName ?? configModuleName ?? (await guessModuleName());
-
-    if (typeof moduleName !== 'string') {
-      throw new Error(
-        "moduleName couldn't be guessed. config in package.json -> komondor.moduleName or --module-name or env KOMONDOR_APP_MODULE_NAME"
-      );
-    }
-
-    console.log(moduleName);
+    const { releaseConfiguration } = await readConfig();
 
     const pbxprojPath = path.join(xcodeProj, 'project.pbxproj');
     console.log(`patching ${xcodeProj}`);
@@ -63,6 +33,37 @@ export const patchXcodeproj = command({
       throw new Error("Couldn't find app target");
     }
     console.log(`Found target ${target.target.name}`);
+
+    const buildConfigurationUUID = target.target.buildConfigurationList;
+
+    const { value: configurationUUID } = project
+      .pbxXCConfigurationList()
+      [buildConfigurationUUID]!.buildConfigurations.find(
+        ({ comment }) => comment === releaseConfiguration
+      ) ?? { value: undefined };
+
+    if (configurationUUID === undefined) {
+      throw new Error(
+        `Couldn't find buildConfiguration ${releaseConfiguration}`
+      );
+    }
+
+    const configuration =
+      project.pbxXCBuildConfigurationSection()[configurationUUID]!;
+
+    const bundleId =
+      configuration.buildSettings.PRODUCT_BUNDLE_IDENTIFIER!.replace(
+        /^\"(.*)\"$/,
+        (_, m) => m
+      );
+
+    if (bundleId.match(/^\$\(PRODUCT_BUNDLE_IDENTIFIER\:/)) {
+      console.log(
+        'PRODUCT_BUNDLE_IDENTIFIER seems to already have patched, skipping'
+      );
+    } else {
+      configuration.buildSettings.PRODUCT_BUNDLE_IDENTIFIER = `"$(PRODUCT_BUNDLE_IDENTIFIER:default=${bundleId})"`;
+    }
 
     const addBuildPhaseIfNeeded = (
       buildPhaseName: string,
@@ -93,24 +94,28 @@ export const patchXcodeproj = command({
 
     addBuildPhaseIfNeeded('[Komondor] Patch Info.plist', () =>
       [
+        "# DON'T EDIT! WILL BE AUTOMATICALLY REPLACED!",
+        '',
         'if [[ -z "${KOMONDOR_ENABLED}" ]]; then',
         '  echo "komondor not enabled, skipping"',
         'else',
         '  WITH_ENVIRONMENT="../node_modules/react-native/scripts/xcode/with-environment.sh"',
         '  KOMONDOR_CLI="../node_modules/komondor/dist/bin/komondor-cli.js patch-info-plist"',
         '  source $WITH_ENVIRONMENT',
-        '  $NODE_BINARY $KOMONDOR_CLI "$CONFIGURATION_BUILD_DIR/$INFOPLIST_PATH"',
+        '  $NODE_BINARY $KOMONDOR_CLI "$BUILT_PRODUCTS_DIR/$INFOPLIST_PATH"',
         'fi',
       ].join('\n')
     );
 
     addBuildPhaseIfNeeded('[Komondor] Add Komondor UI bundle', () =>
       [
+        "# DON'T EDIT! WILL BE AUTOMATICALLY REPLACED!",
+        '',
         'if [[ -z "${KOMONDOR_ENABLED}" ]]; then',
         '  echo "komondor not enabled, skipping"',
         'else',
         '  echo "Adding komondor.jsbundle package"',
-        `  sed "s/bf4eb35237c40d159eaad6d2965df9a3b0934879/${moduleName}/" ../node_modules/komondor/dist/ui/main.jsbundle > "$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/komondor.jsbundle"`,
+        `  sed "s/bf4eb35237c40d159eaad6d2965df9a3b0934879/\$${ConfigEnvKey.appModuleName}/" ../node_modules/komondor/dist/ui/main.jsbundle > "$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/komondor.jsbundle"`,
         'fi',
       ].join('\n')
     );

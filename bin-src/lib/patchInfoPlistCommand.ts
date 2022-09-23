@@ -15,13 +15,13 @@ export const patchInfoPlistCommand = command({
     dict.CFBundleURLTypes = [
       ...(dict.CFBundleURLTypes ?? []),
       {
-        CFBundleURLName: process.env[ConfigEnvKey.bundleIdentifier],
+        CFBundleURLName: process.env.PRODUCT_BUNDLE_IDENTIFIER,
         CFBundleURLSchemes: [process.env[ConfigEnvKey.protocolHandler]],
       },
     ];
 
     dict.CFBundleDisplayName = process.env[ConfigEnvKey.displayName];
-    dict.CFBundleIdentifier = process.env[ConfigEnvKey.bundleIdentifier];
+    dict.CFBundleIdentifier = process.env.PRODUCT_BUNDLE_IDENTIFIER;
 
     dict.NSAppTransportSecurity = { NSAllowsArbitraryLoads: true };
 

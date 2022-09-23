@@ -2,6 +2,21 @@ import { command, option, optional, string } from 'cmd-ts';
 import { readFile, writeFile } from './file';
 import { glob } from './glob-promise';
 import { ConfigEnvKey, readConfig } from './package-json';
+import { dirname, join } from 'path';
+import { existsSync } from 'fs';
+
+const guessModuleName = async () => {
+  if (typeof process.env.npm_package_json !== 'string') {
+    return undefined;
+  }
+  const appJsonPath = join(dirname(process.env.npm_package_json), 'app.json');
+  if (!existsSync(appJsonPath)) {
+    return undefined;
+  }
+  const json = JSON.parse(await readFile(appJsonPath));
+  const name = json.name;
+  return typeof name === 'string' ? name : undefined;
+};
 
 export const patchPodsCommand = command({
   name: 'patch-xcconfig',
@@ -14,8 +29,23 @@ export const patchPodsCommand = command({
       short: 'p',
       description: 'path to the Pods directory. Default: ios/Pods',
     }),
+    customBundleIdentifier: option({
+      type: optional(string),
+      long: 'bundle-identifier',
+      short: 'i',
+      description:
+        'komondor app bundle identifier. e.g. <your bundle identifier>.komondor',
+    }),
+    customModuleName: option({
+      type: optional(string),
+      long: 'module-name',
+      short: 'm',
+      description:
+        'name of the module that is expected by the native app. (see app.json -> name)',
+      env: 'KOMONDOR_APP_MODULE_NAME',
+    }),
   },
-  handler: async ({ customPodsDir }) => {
+  handler: async ({ customPodsDir, customModuleName }) => {
     const matchingLine = (
       file: string,
       matcher: { [Symbol.match](string: string): RegExpMatchArray | null }
@@ -27,7 +57,17 @@ export const patchPodsCommand = command({
       displayName,
       bundleIdentifier,
       protocolHandler,
+      moduleName: configModuleName,
     } = await readConfig();
+
+    const moduleName =
+      customModuleName ?? configModuleName ?? (await guessModuleName());
+
+    if (typeof moduleName !== 'string') {
+      throw new Error(
+        "moduleName couldn't be guessed. config in package.json -> komondor.moduleName or --module-name or env KOMONDOR_APP_MODULE_NAME"
+      );
+    }
 
     const podsDir = customPodsDir ?? 'ios/Pods';
 
@@ -83,12 +123,14 @@ export const patchPodsCommand = command({
             '',
             releaseContent,
             '// patched:',
-            'KOMONDOR_ENABLED = YES',
+            `${ConfigEnvKey.komondorEnabled} = YES`,
             'SKIP_BUNDLING = YES',
             'RCT_NO_LAUNCH_PACKAGER = YES',
+            'PRODUCT_BUNDLE_IDENTIFIER = ${ConfigEnvKey.bundleIdentifier}',
             `${ConfigEnvKey.displayName} = ${displayName}`,
             `${ConfigEnvKey.bundleIdentifier} = ${bundleIdentifier}`,
             `${ConfigEnvKey.protocolHandler} = ${protocolHandler}`,
+            `${ConfigEnvKey.appModuleName} = ${moduleName}`,
             preprocessoerDefinitions,
           ].join('\n')
         );

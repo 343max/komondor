@@ -143,7 +143,7 @@
 
 - (void)switchToBundle:(NSURL *)bundle
 {
-    // TODO
+    // TODO Switch to bundle
 }
 
 - (void)switchToPackagerHost:(NSString *)host port:(NSUInteger)port scheme:(NSString *)scheme

@@ -9,6 +9,7 @@ import { startMetroCommand } from '../lib/startMetroCommand';
 const commands = subcommands({
   name: 'komondor',
   cmds: {
+    // TODO: add setup command
     'patch-info-plist': patchInfoPlistCommand,
     'patch-pods': patchPodsCommand,
     'patch-xcodeproj': patchXcodeproj,

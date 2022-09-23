@@ -16,7 +16,7 @@ export const readPackageJson = async () => {
 
 export type Config = {
   displayName: string;
-  bundleIdentifier: string;
+  bundleIdentifier?: string;
   protocolHandler: string;
   releaseConfiguration: string;
   debugConfiguration: string;
@@ -26,15 +26,16 @@ export type Config = {
 };
 
 export const ConfigEnvKey = {
+  komondorEnabled: 'KOMONDOR_ENABLED',
   displayName: 'KO_PRODUCT_NAME',
   bundleIdentifier: 'KO_PRODUCT_BUNDLE_IDENTIFIER',
   protocolHandler: 'KO_PROTOCOL_HANDLER',
+  appModuleName: 'KO_APP_MODULE_NAME',
 };
 
 export const readConfig = async (): Promise<Config> => ({
   displayName: '$(PRODUCT_NAME) Dev',
-  bundleIdentifier: '$(PRODUCT_BUNDLE_IDENTIFIER).komondor',
-  protocolHandler: '$(PRODUCT_BUNDLE_IDENTIFIER).komondor',
+  protocolHandler: '$(KO_PRODUCT_BUNDLE_IDENTIFIER)',
   releaseConfiguration: 'Release',
   debugConfiguration: 'Debug',
   startCmd: 'npx react-native start',
