@@ -23,7 +23,7 @@ const matchingLine = (
   matcher: { [Symbol.match](string: string): RegExpMatchArray | null }
 ) => file.split('\n').find((l) => l.match(matcher));
 
-const patchXcconfig = async ({
+const applyCustomXcconfig = async ({
   podsDir,
   releaseConfiguration,
   debugConfiguration,
@@ -168,7 +168,7 @@ export const patchPodsCommand = command({
 
     const podsDir = customPodsDir ?? 'ios/Pods';
 
-    patchXcconfig({
+    applyCustomXcconfig({
       podsDir,
       releaseConfiguration,
       debugConfiguration,
