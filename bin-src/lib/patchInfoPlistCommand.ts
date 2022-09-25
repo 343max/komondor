@@ -25,6 +25,8 @@ export const patchInfoPlistCommand = command({
 
     dict.NSAppTransportSecurity = { NSAllowsArbitraryLoads: true };
 
+    dict.NSBonjourServices = ['_http._tcp.'];
+
     await writePlistFile(plistPath, dict);
     console.log(`komondor patched ${plistPath}`);
   },
