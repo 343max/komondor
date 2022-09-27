@@ -7,7 +7,7 @@ import {
   supportsLocalDevelopment,
   switchToPackager,
 } from 'komondor';
-import { List } from './List';
+import { List } from './Components/List';
 import { tw } from './tw';
 import { useDeviceContext } from 'twrnc';
 import { StarButton } from './StarButton';
