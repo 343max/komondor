@@ -34,6 +34,7 @@
     "release": "release-it",
     "example": "yarn --cwd example",
     "bootstrap": "yarn example && yarn && yarn example pods",
+    "ts-node": "ts-node --transpile-only --project tsconfig.bin.json",
     "cli": "ts-node --transpile-only --project tsconfig.bin.json bin-src/bin/komondor-cli.ts"
   },
   "keywords": [
