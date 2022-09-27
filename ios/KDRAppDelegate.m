@@ -48,12 +48,23 @@ extern int KDRApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
              @"nextResponder",
              @"sourceURLForBridge:",
              @"extraModulesForBridge:",
+             @"application:didFinishLaunchingWithOptions:"
          ]) {
              [self swizzleDelegateMethod:NSSelectorFromString(selectorString)
                           forAppDelegate:appDelegateClass];
          }
      });
 }
+
+- (BOOL)swizzled_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
+{
+    BOOL result = [self swizzled_application:application didFinishLaunchingWithOptions:launchOptions];
+    
+    application.idleTimerDisabled = YES;
+    
+    return result;
+}
+
 
 - (BOOL)swizzled_application:(UIApplication *)application
                      openURL:(NSURL *)url
