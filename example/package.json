@@ -9,7 +9,8 @@
     "start": "react-native start --port 8042",
     "pods": "pod-install --quiet",
     "postinstall": "patch-package",
-    "build": "mkdir -p ../dist/ui && react-native bundle --entry-file index.js --platform ios --dev false --reset-cache --bundle-output ../dist/ui/main.jsbundle --assets-dest ../dist/ui"
+    "build": "mkdir -p ../dist/ui && react-native bundle --entry-file index.js --platform ios --dev false --reset-cache --bundle-output ../dist/ui/main.jsbundle --assets-dest ../dist/ui",
+    "dev-setup": "cd ios && pod install && cd ../.. && npm run cli -- patch-pods --pods=example/ios/Pods/ --module-name=main"
   },
   "dependencies": {
     "react": "17.0.2",
