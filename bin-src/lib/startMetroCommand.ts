@@ -4,6 +4,7 @@ import { readConfig, readPackageJson } from './package-json';
 import { spawn } from 'child_process';
 import { createHash } from 'crypto';
 import { getComputerName } from './getComputerName';
+import { getGitBranch, getGitRepo } from './getGitRepo';
 
 const generatePort = (): number => {
   // generate a stable port number based on the current path
@@ -38,6 +39,8 @@ export const startMetroCommand = command({
     const bonjour = new Bonjour();
     const packageJson = await readPackageJson();
     const appName = `${packageJson.name}`;
+    const repo = getGitRepo();
+    const branch = getGitBranch();
 
     process.on('SIGINT', () => {
       console.log('exit');
@@ -53,6 +56,8 @@ export const startMetroCommand = command({
       txt: {
         service: 'komondor',
         moduleName: appName,
+        repo,
+        branch,
       },
     });
 
