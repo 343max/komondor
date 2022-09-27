@@ -17,7 +17,7 @@ export const ListItemView = <T extends ListItem>({
     <View
       key={item.title}
       style={
-        last ? undefined : tw`border-b border-black/10 dark:border-white/20`
+        last ? tw`border-b border-black/10 dark:border-white/20` : undefined
       }
     >
       <View style={tw`bg-gray-300 dark:bg-gray-800`}>
