@@ -36,7 +36,5 @@ export const useBonjourScan = () => {
     };
   }, []);
 
-  console.log(services.map((s) => s.name));
-
   return services;
 };

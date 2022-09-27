@@ -1,0 +1,10 @@
+16a17
+> #ifndef RCT_KEY_COMMANDS
+17a19,25
+> #define RCT_KEY_COMMANDS 1
+> #else
+> #define RCT_KEY_COMMANDS 0
+> #endif
+> #endif
+> 
+> #if RCT_KEY_COMMANDS

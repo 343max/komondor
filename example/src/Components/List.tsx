@@ -5,6 +5,7 @@ import { ListItemView } from './ListItemView';
 
 export type ListItem = {
   title: string;
+  subtitle?: string;
   disabled?: boolean;
   accessoryItem?: React.ReactElement;
 };
@@ -23,7 +24,13 @@ export const List = <T extends ListItem>({
   <View style={tw`m-3`}>
     <Text style={tw`uppercase mb-2 dark:text-gray-400`}>{header}</Text>
     <View style={tw`rounded-lg overflow-hidden`}>
-      {items.map((item, index) => ListItemView<T>(item, index, items, onPress))}
+      {items.map((item, index) => (
+        <ListItemView
+          item={item}
+          onPress={onPress}
+          last={index + 1 < items.length}
+        />
+      ))}
     </View>
   </View>
 );

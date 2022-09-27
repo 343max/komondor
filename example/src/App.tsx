@@ -2,12 +2,13 @@ import * as React from 'react';
 
 import { SafeAreaView, ScrollView, Share } from 'react-native';
 import {
+  BonjourService,
   getUrlSchemes,
   hasNotSwitched,
   supportsLocalDevelopment,
   switchToPackager,
 } from 'komondor';
-import { List } from './Components/List';
+import { List, ListItem } from './Components/List';
 import { tw } from './tw';
 import { useDeviceContext } from 'twrnc';
 import { StarButton } from './StarButton';
@@ -17,6 +18,7 @@ import { useAsyncMemo } from './lib/useAsyncMemo';
 import { useKnownPackagers } from './lib/useKnownPackagers';
 import { useAsyncEffect } from './lib/useAsyncEffect';
 import { useBonjourScan } from './lib/useBonjourScan';
+import { getShortRepoName } from './lib/getShortRepoName';
 
 export default function App() {
   useDeviceContext(tw);
@@ -60,23 +62,29 @@ export default function App() {
     }
   }, [services, watchedPackagers]);
 
-  const packagerItems = React.useMemo(
-    () =>
-      services.map((service) => {
-        return {
-          title: service.name,
-          service,
-          accessoryItem: (
-            <StarButton
-              starred={favoritePackagers.includes(service.name)}
-              style={tw`mr-2`}
-              onPress={() => toggleFavoritePackager(service.name)}
-            />
-          ),
-        };
-      }),
-    [services, favoritePackagers, toggleFavoritePackager]
-  );
+  const packagerItems: (ListItem & { service: BonjourService })[] =
+    React.useMemo(
+      () =>
+        services.map((service) => {
+          return {
+            title: service.name,
+            subtitle: [
+              getShortRepoName(service.txt.repo ?? ''),
+              '>',
+              service.txt.branch,
+            ].join(' '),
+            service,
+            accessoryItem: (
+              <StarButton
+                starred={favoritePackagers.includes(service.name)}
+                style={tw`mr-2`}
+                onPress={() => toggleFavoritePackager(service.name)}
+              />
+            ),
+          };
+        }),
+      [services, favoritePackagers, toggleFavoritePackager]
+    );
 
   return (
     <SafeAreaView style={tw`bg-slate-200 dark:bg-slate-700`}>
