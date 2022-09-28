@@ -5,6 +5,7 @@ import { spawn } from 'child_process';
 import { createHash } from 'crypto';
 import { getComputerName } from './getComputerName';
 import { getGitBranch, getGitRepo } from './getGitRepo';
+import { getCanonicalRepoName } from './getCanonicalRepoName';
 
 const generatePort = (): number => {
   // generate a stable port number based on the current path
@@ -56,7 +57,7 @@ export const startMetroCommand = command({
       txt: {
         service: 'komondor',
         moduleName: appName,
-        repo,
+        repo: getCanonicalRepoName(repo),
         branch,
       },
     });
