@@ -30,7 +30,7 @@
     "build:bin": "tsc -b tsconfig.bin.json --force",
     "build:rn": "bob build",
     "build:ui": "yarn --cwd example build",
-    "prepare": "yarn build:bin && yarn build:rn && yarn build:ui",
+    "prepare-release": "yarn build:bin && yarn build:rn && yarn build:ui",
     "release": "release-it",
     "example": "yarn --cwd example",
     "bootstrap": "yarn example && yarn && yarn example pods",

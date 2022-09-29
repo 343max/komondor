@@ -4,7 +4,7 @@ set -ex
 
 # package up komondor and test install
 
-yarn run prepare
+yarn run prepare-release
 npm pack
 
 cp komondor-*.tgz ~/Projects/PawdonMe/
