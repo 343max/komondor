@@ -42,6 +42,7 @@ export const startMetroCommand = command({
     const appName = `${packageJson.name}`;
     const repo = getGitRepo();
     const branch = getGitBranch();
+    const computerName = getComputerName();
 
     process.on('SIGINT', () => {
       console.log('exit');
@@ -51,7 +52,7 @@ export const startMetroCommand = command({
     });
 
     bonjour.publish({
-      name: `${appName} @ ${getComputerName()}`,
+      name: `${appName} @ ${computerName}`,
       type: 'http',
       port,
       txt: {
