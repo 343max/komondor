@@ -1,0 +1,10 @@
+{
+  "image": "mcr.microsoft.com/vscode/devcontainers/typescript-node:0-16",
+  "customizations": {
+    "vscode": {
+      "extensions": ["Orta.vscode-jest", "esbenp.prettier-vscode"]
+    }
+  },
+  "shutdownAction": "stopContainer",
+  "postAttachCommand": "yarn install"
+}
