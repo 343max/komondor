@@ -62,6 +62,12 @@ extern int KDRApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
     
     application.idleTimerDisabled = YES;
     
+    [[UIApplication sharedApplication].connectedScenes enumerateObjectsUsingBlock:^(UIScene * _Nonnull scene, BOOL * _Nonnull stop) {
+      if ([scene isKindOfClass:[UIWindowScene class]]) {
+        ((UIWindowScene *)scene).sizeRestrictions.minimumSize = CGSizeMake(284, 512);
+      }
+    }];
+    
     return result;
 }
 
