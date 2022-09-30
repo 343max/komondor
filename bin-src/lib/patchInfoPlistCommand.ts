@@ -27,6 +27,13 @@ export const patchInfoPlistCommand = command({
 
     dict.NSBonjourServices = ['_http._tcp.'];
 
+    dict['UISupportedInterfaceOrientations~ipad'] = [
+      'UIInterfaceOrientationLandscapeLeft',
+      'UIInterfaceOrientationLandscapeRight',
+      'UIInterfaceOrientationPortrait',
+      'UIInterfaceOrientationPortraitUpsideDown',
+    ];
+
     await writePlistFile(plistPath, dict);
     console.log(`komondor patched ${plistPath}`);
   },

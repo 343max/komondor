@@ -95,6 +95,7 @@ const applyCustomXcconfig = async ({
           `${ConfigEnvKey.komondorEnabled} = YES`,
           'SKIP_BUNDLING = YES',
           'RCT_NO_LAUNCH_PACKAGER = YES',
+          'TARGETED_DEVICE_FAMILY = 1,2',
           `PRODUCT_BUNDLE_IDENTIFIER = \$${ConfigEnvKey.bundleIdentifier}`,
           `${ConfigEnvKey.displayName} = ${displayName}`,
           `${ConfigEnvKey.bundleIdentifier} = ${bundleIdentifier}`,
