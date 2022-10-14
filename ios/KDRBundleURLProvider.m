@@ -73,7 +73,7 @@
     static KDRBundleURLProvider *sharedProvider = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-      sharedProvider = [[KDRBundleURLProvider alloc] init];
+        sharedProvider = [[KDRBundleURLProvider alloc] init];
     });
     return sharedProvider;
 }

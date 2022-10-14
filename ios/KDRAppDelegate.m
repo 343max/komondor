@@ -41,19 +41,19 @@ extern int KDRApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
     Class appDelegateClass = NSClassFromString(delegateClassName);
     NSAssert(appDelegateClass != nil, @"No App Delegate!");
     static dispatch_once_t token;
-     dispatch_once(&token, ^{
-         for(NSString *selectorString in @[
-             @"application:openURL:options:",
-             @"buildMenuWithBuilder:",
-             @"nextResponder",
-             @"sourceURLForBridge:",
-             @"extraModulesForBridge:",
-             @"application:didFinishLaunchingWithOptions:"
-         ]) {
-             [self swizzleDelegateMethod:NSSelectorFromString(selectorString)
-                          forAppDelegate:appDelegateClass];
-         }
-     });
+    dispatch_once(&token, ^{
+        for(NSString *selectorString in @[
+            @"application:openURL:options:",
+            @"buildMenuWithBuilder:",
+            @"nextResponder",
+            @"sourceURLForBridge:",
+            @"extraModulesForBridge:",
+            @"application:didFinishLaunchingWithOptions:"
+        ]) {
+            [self swizzleDelegateMethod:NSSelectorFromString(selectorString)
+                         forAppDelegate:appDelegateClass];
+        }
+    });
 }
 
 - (BOOL)swizzled_application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -63,9 +63,9 @@ extern int KDRApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
     application.idleTimerDisabled = YES;
     
     [[UIApplication sharedApplication].connectedScenes enumerateObjectsUsingBlock:^(UIScene * _Nonnull scene, BOOL * _Nonnull stop) {
-      if ([scene isKindOfClass:[UIWindowScene class]]) {
-        ((UIWindowScene *)scene).sizeRestrictions.minimumSize = CGSizeMake(284, 512);
-      }
+        if ([scene isKindOfClass:[UIWindowScene class]]) {
+            ((UIWindowScene *)scene).sizeRestrictions.minimumSize = CGSizeMake(284, 512);
+        }
     }];
     
     return result;
@@ -105,7 +105,7 @@ extern int KDRApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
 - (UIResponder *)swizzled_nextResponder
 {
     UIResponder *nextResponder = [self respondsToSelector:@selector(swizzled_nextResponder)] ?
-                                                                [self swizzled_nextResponder] : nil;
+    [self swizzled_nextResponder] : nil;
     return  [[KDRDevHelper sharedHelper] nextResponderInsteadOfResponder:nextResponder];
 }
 
