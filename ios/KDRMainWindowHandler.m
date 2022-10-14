@@ -91,7 +91,6 @@
 
 - (BOOL)shouldFloatOnTopApp:(NSRunningApplication *)frontApp
 {
-    NSLog(@"floatOnTop: %@", _floatOnTopOfBundleIdentifiers);
     if (_floatOnTopOfBundleIdentifiers.count == 0) {
         return NO;
     } else if ([_floatOnTopOfBundleIdentifiers isEqualToArray:@[@"everything"]]) {
