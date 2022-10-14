@@ -33,16 +33,16 @@
         _backgroundIgnoresClicks = backgroundIgnoresClicks;
         
         __weak KDRMainWindowHandler *weakSelf = self;
-        [[NSNotificationCenter defaultCenter] addObserverForName:@"NSWindowDidBecomeMainNotification"
+        [[NSNotificationCenter defaultCenter] addObserverForName:@"NSWindowDidUpdateNotification"
                                                           object:nil
                                                            queue:[NSOperationQueue mainQueue]
                                                       usingBlock:^(NSNotification * _Nonnull note) {
-            if ([KDRMainWindowHandler isUIKitWindow:note.object]) {
+            if (weakSelf.mainWindow != note.object && [KDRMainWindowHandler isUIKitWindow:note.object]) {
                 weakSelf.mainWindow = note.object;
                 [weakSelf updateFloatOnTop:[KDRMainWindowHandler sharedWorkspace].frontmostApplication];
             }
         }];
-        
+
         [[NSNotificationCenter defaultCenter] addObserverForName:@"NSWindowDidBecomeKeyNotification"
                                                           object:nil
                                                            queue:[NSOperationQueue mainQueue]
