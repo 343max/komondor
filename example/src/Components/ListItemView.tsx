@@ -1,6 +1,5 @@
 import React from 'react';
 import { Text, TouchableHighlight, View } from 'react-native';
-import { textStyle } from '../lib/styles';
 import { tw } from '../tw';
 import type { ListItem } from './List';
 
@@ -31,7 +30,7 @@ export const ListItemView = <T extends ListItem>({
         >
           <View style={tw`flex-row justify-between items-center`}>
             <View style={item.disabled ? tw`opacity-25` : undefined}>
-              <Text style={[tw`text-lg font-medium `, textStyle]}>
+              <Text style={tw`text-lg font-medium text-black dark:text-white`}>
                 {item.title}
               </Text>
               {item.subtitle ? (
