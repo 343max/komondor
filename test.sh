@@ -7,9 +7,9 @@ set -ex
 yarn run prepare-release
 npm pack
 
-cp komondor-*.tgz ~/Projects/PawdonMe/
+cp komondor-*.tgz ~/Projects/TodoToday/
 
-cd ~/Projects/PawdonMe/
+cd ~/Projects/TodoToday/
 
 # git reset --hard
 
