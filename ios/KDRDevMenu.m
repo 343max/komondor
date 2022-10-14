@@ -31,32 +31,32 @@
 
 - (instancetype)init
 {
-  self = [super init];
-  if (self) {
-    _handlers = [NSMutableArray array];
-  }
-  return self;
+    self = [super init];
+    if (self) {
+        _handlers = [NSMutableArray array];
+    }
+    return self;
 }
 
 - (UIResponder *)nextResponder
 {
-  return __nextResponder;
+    return __nextResponder;
 }
 
 - (SEL)generateSelector:(dispatch_block_t)handler
 {
-  NSString *stringSelector = [NSString stringWithFormat:@"handler_%lu", _handlers.count];
-  SEL selector = NSSelectorFromString(stringSelector);
-
-  [_handlers addObject:handler];
-
-  return selector;
+    NSString *stringSelector = [NSString stringWithFormat:@"handler_%lu", _handlers.count];
+    SEL selector = NSSelectorFromString(stringSelector);
+    
+    [_handlers addObject:handler];
+    
+    return selector;
 }
 
 #define _handler(index) \
 - (void)handler_##index \
 {                       \
-  _handlers[index]();   \
+_handlers[index]();   \
 }
 
 _handler(0);
@@ -110,162 +110,176 @@ _handler(19);
 
 + (BOOL)isRunningOnMac
 {
-  if (@available(iOS 14.0, *)) {
-    return [NSProcessInfo processInfo].isiOSAppOnMac;
-  } else {
-    return false;
-  }
+    if (@available(iOS 14.0, *)) {
+        return [NSProcessInfo processInfo].isiOSAppOnMac;
+    } else {
+        return false;
+    }
 }
 
 - (instancetype)initWithBridge:(RCTBridge *)bridge
 {
-  self = [super init];
-  if (self) {
-    _bridge = bridge;
-  }
-  return self;
+    self = [super init];
+    if (self) {
+        _bridge = bridge;
+    }
+    return self;
 }
 
 - (void)setupWithBuilder:(id<UIMenuBuilder>)builder NS_AVAILABLE_IOS(13.0);
 {
-  _menuResponder = [[MenuResponder alloc] init];
-  
-  SEL floatOnTopAction = [_menuResponder generateSelector:^{
-    [[KDRDevHelper sharedHelper] toggleFloatOnTop];
-    [[UIMenuSystem mainSystem] setNeedsRebuild];
-  }];
-  
-  UICommand *stayOnTop = [UICommand commandWithTitle:@"Float On Top"
-                                                  image:nil
-                                                 action:floatOnTopAction
-                                           propertyList:nil];
-  
-  stayOnTop.state = [KDRDevHelper sharedHelper].floatOnTopSetting ? UIMenuElementStateOn : UIMenuElementStateOff;
-  
-  SEL packagePickerMenuAction = [_menuResponder generateSelector:^{
-    [[KDRBundleURLProvider sharedProvider] switchToInternalPicker];
-  }];
-  
-  UICommand *packagePickerMenu = [UICommand commandWithTitle:@"Show Package Picker 🐶"
-                                                       image:nil
-                                                      action:packagePickerMenuAction
-                                                propertyList:nil];
-  
-  packagePickerMenu.attributes = [KDRBundleURLProvider sharedProvider].showsInternalPicker ? UIMenuElementAttributesDisabled : 0;
-  
-  __weak KDRDevMenu *weakSelf = self;
-  SEL showDevMenuAction = [_menuResponder generateSelector:^{
-    [weakSelf.bridge.devMenu show];
-  }];
-  
-  UICommand *showDevMenu = [UIKeyCommand commandWithTitle:@"Show RN Dev Menu"
-                                                    image:nil
-                                                   action:showDevMenuAction
-                                                    input:@"Z"
-                                            modifierFlags:UIKeyModifierCommand | UIKeyModifierControl
-                                             propertyList:nil];
-  
-  showDevMenu.attributes =  [KDRDevMenu devSettingsEnabledForBridge:weakSelf.bridge] ? 0 : UIMenuElementAttributesDisabled;
-
-  NSArray *devMenuItems = array_map([KDRDevMenu devMenuItemsForBridge:_bridge], ^id _Nonnull(RCTDevMenuItem *item, NSUInteger idx) {
-    NSString *keyEquivalent = nil;
-    NSString *title = [item title];
-    if ([title isEqualToString:@"Reload"]) {
-      keyEquivalent = @"r";
-    } else if([title isEqualToString:@"Stop Debugging"] | [title isEqualToString:@"Debug with Chrome"]) {
-      keyEquivalent = @"d";
-    } else if([title isEqualToString:@"Show Perf Monitor"] | [title isEqualToString:@"Hide Perf Monitor"]) {
-      keyEquivalent = @"p";
-    } else if([title isEqualToString:@"Show Inspector"] | [title isEqualToString:@"Hide Inspector"]) {
-      keyEquivalent = @"i";
-    }
-
-    SEL action = [self.menuResponder generateSelector:^{
-      [item callHandler];
-      [[UIMenuSystem mainSystem] setNeedsRebuild];
+    _menuResponder = [[MenuResponder alloc] init];
+    
+    SEL floatOnTopAction = [_menuResponder generateSelector:^{
+        [[KDRDevHelper sharedHelper] toggleFloatOnTopOfEverything];
+        [[UIMenuSystem mainSystem] setNeedsRebuild];
     }];
+    
+    UICommand *stayOnTop = [UICommand commandWithTitle:@"Float On Top"
+                                                 image:nil
+                                                action:floatOnTopAction
+                                          propertyList:nil];
+    
+    stayOnTop.state = [KDRDevHelper sharedHelper].floatsOnTopOfEverything ? UIMenuElementStateOn : UIMenuElementStateOff;
+    
+    SEL floatOnTopOfEditorsAction = [_menuResponder generateSelector:^{
+        [[KDRDevHelper sharedHelper] toggleFloatOnTopOfEditors];
+        [[UIMenuSystem mainSystem] setNeedsRebuild];
+    }];
+    
+    UICommand *stayOnTopOfEditors = [UICommand commandWithTitle:@"Float On Top of VSCode"
+                                                          image:nil
+                                                         action:floatOnTopOfEditorsAction
+                                                   propertyList:nil];
+    
+    stayOnTopOfEditors.state = [KDRDevHelper sharedHelper].floatsOnTopOfEditors ? UIMenuElementStateOn : UIMenuElementStateOff;
+    
+    
+    SEL packagePickerMenuAction = [_menuResponder generateSelector:^{
+        [[KDRBundleURLProvider sharedProvider] switchToInternalPicker];
+    }];
+    
+    UICommand *packagePickerMenu = [UICommand commandWithTitle:@"Show Package Picker 🐶"
+                                                         image:nil
+                                                        action:packagePickerMenuAction
+                                                  propertyList:nil];
+    
+    packagePickerMenu.attributes = [KDRBundleURLProvider sharedProvider].showsInternalPicker ? UIMenuElementAttributesDisabled : 0;
+    
+    __weak KDRDevMenu *weakSelf = self;
+    SEL showDevMenuAction = [_menuResponder generateSelector:^{
+        [weakSelf.bridge.devMenu show];
+    }];
+    
+    UICommand *showDevMenu = [UIKeyCommand commandWithTitle:@"Show RN Dev Menu"
+                                                      image:nil
+                                                     action:showDevMenuAction
+                                                      input:@"Z"
+                                              modifierFlags:UIKeyModifierCommand | UIKeyModifierControl
+                                               propertyList:nil];
+    
+    showDevMenu.attributes =  [KDRDevMenu devSettingsEnabledForBridge:weakSelf.bridge] ? 0 : UIMenuElementAttributesDisabled;
+    
+    NSArray *devMenuItems = array_map([KDRDevMenu devMenuItemsForBridge:_bridge], ^id _Nonnull(RCTDevMenuItem *item, NSUInteger idx) {
+        NSString *keyEquivalent = nil;
+        NSString *title = [item title];
+        if ([title isEqualToString:@"Reload"]) {
+            keyEquivalent = @"r";
+        } else if([title isEqualToString:@"Stop Debugging"] | [title isEqualToString:@"Debug with Chrome"]) {
+            keyEquivalent = @"d";
+        } else if([title isEqualToString:@"Show Perf Monitor"] | [title isEqualToString:@"Hide Perf Monitor"]) {
+            keyEquivalent = @"p";
+        } else if([title isEqualToString:@"Show Inspector"] | [title isEqualToString:@"Hide Inspector"]) {
+            keyEquivalent = @"i";
+        }
         
-    if (keyEquivalent == nil) {
-      return [UICommand commandWithTitle:title
-                                   image:nil
-                                  action:action
-                            propertyList:nil];
-    } else {
-      return [UIKeyCommand commandWithTitle:title
-                                      image:nil
-                                     action:action
-                                      input:keyEquivalent
-                              modifierFlags:UIKeyModifierCommand | UIKeyModifierControl
-                               propertyList:nil];
-    }
-  }).mutableCopy ;
-  
-  UIMenu *resizeMenu = [UIMenu menuWithTitle:@"Resize"
-                                    children:@[
-    [self resizeMenuForTitle:@"iPhone 12" size:CGSizeMake(390, 844)],
-    [self resizeMenuForTitle:@"iPhone 12 mini" size:CGSizeMake(375, 812)],
-    [self resizeMenuForTitle:@"iPhone 12 max" size:CGSizeMake(428, 926)],
-    [self resizeMenuForTitle:@"iPhone SE" size:CGSizeMake(375, 667)]
-  ]];
-  
-  SEL ignoresClicksAction = [self.menuResponder generateSelector:^{
-    [KDRDevHelper sharedHelper].backgroundIgnoresClicks = ![KDRDevHelper sharedHelper].backgroundIgnoresClicks;
-    [[UIMenuSystem mainSystem] setNeedsRebuild];
-  }];
-  
-  UICommand *ignoresClicksMenu = [UICommand commandWithTitle:@"Ignores Clicks"
-                                                       image:nil
-                                                      action:ignoresClicksAction
-                                                propertyList:nil];
-  ignoresClicksMenu.state = [KDRDevHelper sharedHelper].backgroundIgnoresClicks ? UIMenuElementStateOn : UIMenuElementStateOff;
-  
-  UIMenu *windowAlphaMenu = [UIMenu menuWithTitle:@"Inactive Window"
-                                         children:@[
-    ignoresClicksMenu,
-    [self alphaMenuForTitle:@"Alpha 100%" alpha:1.0],
-    [self alphaMenuForTitle:@"Alpha 75%" alpha:0.75],
-    [self alphaMenuForTitle:@"Alpha 50%" alpha:0.5],
-    [self alphaMenuForTitle:@"Alpha 25%" alpha:0.25]
-  ]];
- 
-  NSArray *menuItems = [@[
-    stayOnTop,
-    resizeMenu,
-    windowAlphaMenu,
-    packagePickerMenu,
-    showDevMenu,
-  ] arrayByAddingObjectsFromArray:devMenuItems];
-
-  _devMenu = [UIMenu menuWithTitle:@"Komondor" children:menuItems];
-  
-  [builder insertSiblingMenu:_devMenu beforeMenuForIdentifier:UIMenuHelp];
+        SEL action = [self.menuResponder generateSelector:^{
+            [item callHandler];
+            [[UIMenuSystem mainSystem] setNeedsRebuild];
+        }];
+        
+        if (keyEquivalent == nil) {
+            return [UICommand commandWithTitle:title
+                                         image:nil
+                                        action:action
+                                  propertyList:nil];
+        } else {
+            return [UIKeyCommand commandWithTitle:title
+                                            image:nil
+                                           action:action
+                                            input:keyEquivalent
+                                    modifierFlags:UIKeyModifierCommand | UIKeyModifierControl
+                                     propertyList:nil];
+        }
+    }).mutableCopy ;
+    
+    UIMenu *resizeMenu = [UIMenu menuWithTitle:@"Resize"
+                                      children:@[
+        [self resizeMenuForTitle:@"iPhone 12" size:CGSizeMake(390, 844)],
+        [self resizeMenuForTitle:@"iPhone 12 mini" size:CGSizeMake(375, 812)],
+        [self resizeMenuForTitle:@"iPhone 12 max" size:CGSizeMake(428, 926)],
+        [self resizeMenuForTitle:@"iPhone SE" size:CGSizeMake(375, 667)]
+    ]];
+    
+    SEL ignoresClicksAction = [self.menuResponder generateSelector:^{
+        [KDRDevHelper sharedHelper].backgroundIgnoresClicks = ![KDRDevHelper sharedHelper].backgroundIgnoresClicks;
+        [[UIMenuSystem mainSystem] setNeedsRebuild];
+    }];
+    
+    UICommand *ignoresClicksMenu = [UICommand commandWithTitle:@"Ignores Clicks"
+                                                         image:nil
+                                                        action:ignoresClicksAction
+                                                  propertyList:nil];
+    ignoresClicksMenu.state = [KDRDevHelper sharedHelper].backgroundIgnoresClicks ? UIMenuElementStateOn : UIMenuElementStateOff;
+    
+    UIMenu *windowAlphaMenu = [UIMenu menuWithTitle:@"Inactive Window"
+                                           children:@[
+        ignoresClicksMenu,
+        [self alphaMenuForTitle:@"Alpha 100%" alpha:1.0],
+        [self alphaMenuForTitle:@"Alpha 75%" alpha:0.75],
+        [self alphaMenuForTitle:@"Alpha 50%" alpha:0.5],
+        [self alphaMenuForTitle:@"Alpha 25%" alpha:0.25]
+    ]];
+    
+    NSArray *menuItems = [@[
+        stayOnTop,
+        stayOnTopOfEditors,
+        resizeMenu,
+        windowAlphaMenu,
+        packagePickerMenu,
+        showDevMenu,
+    ] arrayByAddingObjectsFromArray:devMenuItems];
+    
+    _devMenu = [UIMenu menuWithTitle:@"Komondor" children:menuItems];
+    
+    [builder insertSiblingMenu:_devMenu beforeMenuForIdentifier:UIMenuHelp];
 }
 
 - (id)nextResponderInsteadOfResponder:(id)nextResponder
 {
-  _menuResponder._nextResponder = nextResponder;
-  return _menuResponder;
+    _menuResponder._nextResponder = nextResponder;
+    return _menuResponder;
 }
 
 + (BOOL)devSettingsEnabledForBridge:(RCTBridge *)bridge
 {
-  return bridge.devSettings != nil;
+    return bridge.devSettings != nil;
 }
 
 #if __has_include(<React/RCTDevMenu.h>)
 + (NSArray<RCTDevMenuItem *> *)devMenuItemsForBridge:(RCTBridge *)bridge
 {
-  if ([self devSettingsEnabledForBridge:bridge]) {
-    return [bridge.devMenu _menuItemsToPresent];
-  } else {
-    return @[];
-  }
+    if ([self devSettingsEnabledForBridge:bridge]) {
+        return [bridge.devMenu _menuItemsToPresent];
+    } else {
+        return @[];
+    }
 }
 
 #else
 + (NSArray<RCTDevMenuItem *> *)devMenuItemsForBridge:(RCTBridge *)bridge
 {
-  return @[];
+    return @[];
 }
 #endif
 
@@ -275,31 +289,31 @@ _handler(19);
 
 - (UIMenuElement *)resizeMenuForTitle:(NSString *)title size:(CGSize)size
 {
-  SEL action = [_menuResponder generateSelector:^{
-    [[KDRDevHelper sharedHelper].windowHandler setWindowSize:size animated:YES];
-  }];
-  
-  return [UICommand commandWithTitle:title
-                               image:nil
-                              action:action
-                        propertyList:nil];
+    SEL action = [_menuResponder generateSelector:^{
+        [[KDRDevHelper sharedHelper].windowHandler setWindowSize:size animated:YES];
+    }];
+    
+    return [UICommand commandWithTitle:title
+                                 image:nil
+                                action:action
+                          propertyList:nil];
 }
 
 - (UIMenuElement *)alphaMenuForTitle:(NSString *)title alpha:(CGFloat)alpha
 {
-  SEL action = [_menuResponder generateSelector:^{
-    [KDRDevHelper sharedHelper].backgroundAlpha = alpha;
-    [[UIMenuSystem mainSystem] setNeedsRebuild];
-  }];
-  
-  UICommand *command = [UICommand commandWithTitle:title
-                                             image:nil
-                                            action:action
-                                      propertyList:nil];
-  
-  command.state = [KDRDevHelper sharedHelper].backgroundAlpha == alpha ? UIMenuElementStateOn : UIMenuElementStateOff;
-  
-  return command;
+    SEL action = [_menuResponder generateSelector:^{
+        [KDRDevHelper sharedHelper].backgroundAlpha = alpha;
+        [[UIMenuSystem mainSystem] setNeedsRebuild];
+    }];
+    
+    UICommand *command = [UICommand commandWithTitle:title
+                                               image:nil
+                                              action:action
+                                        propertyList:nil];
+    
+    command.state = [KDRDevHelper sharedHelper].backgroundAlpha == alpha ? UIMenuElementStateOn : UIMenuElementStateOff;
+    
+    return command;
 }
 
 

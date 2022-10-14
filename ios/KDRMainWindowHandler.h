@@ -8,12 +8,14 @@ NS_ASSUME_NONNULL_BEGIN
 @property (assign, nonatomic) CGFloat backgroundAlpha;
 @property (assign, nonatomic) BOOL backgroundIgnoresClicks;
 
-@property (assign, nonatomic) BOOL floatOnTop;
+/// nil: float on top of nothing, @[@"everything"]: float on top of everything, @[strings]: float of top of these bundle Identifiers
+@property (strong, nonatomic, nullable) NSArray<NSString *> *floatOnTopOfBundleIdentifiers;
+
 @property (assign, nonatomic) CGSize windowSize;
 
-- (instancetype)initWithFloatOnTop:(BOOL)floatOnTop
-                   backgroundAlpha:(CGFloat)backgroundAlpha
-           backgroundIgnoresClicks:(BOOL)backgroundIgnoresClicks;
+- (instancetype)initWithFloatOnTopBundleIdentifiers:(nullable NSArray<NSString *> *)floatOnTopOfBundleIdentifiers
+                                    backgroundAlpha:(CGFloat)backgroundAlpha
+                            backgroundIgnoresClicks:(BOOL)backgroundIgnoresClicks;
 
 - (void)setWindowSize:(CGSize)windowSize animated:(BOOL)animated;
 

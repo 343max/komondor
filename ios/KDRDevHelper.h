@@ -21,7 +21,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (UIResponder *)nextResponderInsteadOfResponder:(UIResponder *)nextResponder;
 
-- (void)toggleFloatOnTop;
+- (BOOL)floatsOnTopOfEverything;
+- (void)toggleFloatOnTopOfEverything;
+- (BOOL)floatsOnTopOfEditors;
+- (void)toggleFloatOnTopOfEditors;
 
 @property (strong, nonatomic, readonly) KDRMainWindowHandler *windowHandler;
 
@@ -30,7 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface KDRDevHelper (Settings)
 
-@property (assign, nonatomic) BOOL floatOnTopSetting;
+/// nil: float on top of nothing, @[@"everything"]: float on top of everything, @[strings]: float of top of these bundle Identifiers
+@property (strong, nonatomic, nullable) NSArray<NSString *> *floatOnTopOfBundleIdentifiers;
 @property (assign, nonatomic) CGFloat backgroundAlpha;
 @property (assign, nonatomic) BOOL backgroundIgnoresClicks;
 

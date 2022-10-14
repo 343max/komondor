@@ -83,4 +83,19 @@ static const NSControlStateValue NSControlStateValueOn = 1;
 
 @end
 
+
+@interface NSRunningApplication : NSObject
+
+@property (nullable, readonly, copy) NSString *bundleIdentifier;
+
+@end
+
+@interface NSWorkspace : NSObject
+
+@property (class, readonly, strong) NSWorkspace *sharedWorkspace;
+@property (readonly, strong) NSNotificationCenter *notificationCenter;
+@property (nullable, readonly, strong) NSRunningApplication *frontmostApplication;
+
+@end
+
 NS_ASSUME_NONNULL_END
