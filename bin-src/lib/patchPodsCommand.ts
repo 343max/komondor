@@ -91,7 +91,7 @@ const applyCustomXcconfig = async ({
           patchComment,
           '',
           releaseContent,
-          '// patched:',
+          '// patched using Komondor',
           `${ConfigEnvKey.komondorEnabled} = YES`,
           'SKIP_BUNDLING = YES',
           'RCT_NO_LAUNCH_PACKAGER = YES',
