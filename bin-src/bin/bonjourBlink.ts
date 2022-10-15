@@ -1,5 +1,6 @@
 import Bonjour from 'bonjour-service';
 import { getComputerName } from '../lib/getComputerName';
+import { getFullUserName, getShortUserName } from '../lib/getUserName';
 import { sleep } from '../lib/sleep';
 
 const main = async () => {
@@ -12,6 +13,8 @@ const main = async () => {
     process.exit();
   });
 
+  const userName = getFullUserName() ?? getShortUserName();
+
   while (true) {
     console.log('on');
     bonjour.publish({
@@ -21,12 +24,13 @@ const main = async () => {
       txt: {
         service: 'komondor',
         moduleName: 'bonjourBlink',
+        userName,
       },
     });
-    await sleep(2000);
+    await sleep(3000);
     console.log('off');
     await new Promise((resolve) => bonjour.unpublishAll(resolve));
-    await sleep(1000);
+    await sleep(500);
   }
 };
 

@@ -6,6 +6,7 @@ import { createHash } from 'crypto';
 import { getComputerName } from './getComputerName';
 import { getGitBranch, getGitRepo } from './getGitRepo';
 import { getCanonicalRepoName } from './getCanonicalRepoName';
+import { getFullUserName, getShortUserName } from './getUserName';
 
 const generatePort = (): number => {
   // generate a stable port number based on the current path
@@ -43,6 +44,7 @@ export const startMetroCommand = command({
     const repo = getGitRepo();
     const branch = getGitBranch();
     const computerName = getComputerName();
+    const userName = getFullUserName() ?? getShortUserName();
 
     process.on('SIGINT', () => {
       console.log('exit');
@@ -60,6 +62,7 @@ export const startMetroCommand = command({
         moduleName: appName,
         repo: getCanonicalRepoName(repo),
         branch,
+        userName,
       },
     });
 
@@ -73,7 +76,7 @@ export const startMetroCommand = command({
 
     child.on('exit', () => {
       bonjour.unpublishAll(() => {
-      bonjour.destroy();
+        bonjour.destroy();
       });
     });
   },
