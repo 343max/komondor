@@ -27,6 +27,10 @@ export const patchInfoPlistCommand = command({
 
     dict.NSBonjourServices = ['_http._tcp.'];
 
+    if (dict.ITSAppUsesNonExemptEncryption === undefined) {
+      dict.ITSAppUsesNonExemptEncryption = false;
+    }
+
     dict['UISupportedInterfaceOrientations~ipad'] = [
       'UIInterfaceOrientationLandscapeLeft',
       'UIInterfaceOrientationLandscapeRight',
