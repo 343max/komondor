@@ -72,8 +72,9 @@ export const startMetroCommand = command({
     });
 
     child.on('exit', () => {
-      bonjour.unpublishAll();
+      bonjour.unpublishAll(() => {
       bonjour.destroy();
+      });
     });
   },
 });
