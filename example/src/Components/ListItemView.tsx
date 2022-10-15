@@ -34,7 +34,9 @@ export const ListItemView = <T extends ListItem>({
                 {item.title}
               </Text>
               {item.subtitle ? (
-                <Text style={[tw`text-sm font-medium opacity-66`, textStyle]}>
+                <Text
+                  style={tw`text-sm font-medium opacity-66 text-black dark:text-white`}
+                >
                   {item.subtitle}
                 </Text>
               ) : null}
