@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5074F8E928FC0C6800C5B239 /* KDRBundleDownloader.m in Sources */ = {isa = PBXBuildFile; fileRef = 5074F8E828FC0C6800C5B239 /* KDRBundleDownloader.m */; };
 		50B3331B28D799C7001A6C01 /* Swizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = 50B3330928D799C7001A6C01 /* Swizzle.m */; };
 		50B3331C28D799C7001A6C01 /* KDRBundleURLProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 50B3330D28D799C7001A6C01 /* KDRBundleURLProvider.m */; };
 		50B3331D28D799C7001A6C01 /* KDROpenURLQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 50B3330E28D799C7001A6C01 /* KDROpenURLQueue.m */; };
@@ -32,6 +33,8 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libKomondor.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libKomondor.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		5074F8E728FC0C6800C5B239 /* KDRBundleDownloader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KDRBundleDownloader.h; sourceTree = "<group>"; };
+		5074F8E828FC0C6800C5B239 /* KDRBundleDownloader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = KDRBundleDownloader.m; sourceTree = "<group>"; };
 		50B3330828D799C7001A6C01 /* AppKitHeaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppKitHeaders.h; sourceTree = "<group>"; };
 		50B3330928D799C7001A6C01 /* Swizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Swizzle.m; sourceTree = "<group>"; };
 		50B3330A28D799C7001A6C01 /* Swizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Swizzle.h; sourceTree = "<group>"; };
@@ -75,6 +78,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				5074F8E728FC0C6800C5B239 /* KDRBundleDownloader.h */,
+				5074F8E828FC0C6800C5B239 /* KDRBundleDownloader.m */,
 				50B3332428D79BAB001A6C01 /* Komondor.h */,
 				50B3332528D79BAB001A6C01 /* Komondor.mm */,
 				50B3330828D799C7001A6C01 /* AppKitHeaders.h */,
@@ -161,6 +166,7 @@
 				50B3332028D799C7001A6C01 /* KDRAppDelegate.m in Sources */,
 				50B3331D28D799C7001A6C01 /* KDROpenURLQueue.m in Sources */,
 				50B3331F28D799C7001A6C01 /* array_map.m in Sources */,
+				5074F8E928FC0C6800C5B239 /* KDRBundleDownloader.m in Sources */,
 				50B3331C28D799C7001A6C01 /* KDRBundleURLProvider.m in Sources */,
 				50B3332628D79BAB001A6C01 /* Komondor.mm in Sources */,
 				50B3331B28D799C7001A6C01 /* Swizzle.m in Sources */,

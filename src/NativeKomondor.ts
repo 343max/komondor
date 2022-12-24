@@ -18,6 +18,9 @@ export interface Spec extends TurboModule {
   scan(type: string, protocol: string, domain: string): Promise<void>;
   stopScanning(): Promise<void>;
   myIPAddresses(): Promise<string[]>;
+
+  /// download and extracts a bundle
+  downloadBundle(): Promise<string>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('Komondor');
