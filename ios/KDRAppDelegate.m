@@ -26,6 +26,16 @@ extern int KDRApplicationMain(int argc, char * _Nullable argv[_Nonnull], NSStrin
 
 @implementation KDRAppDelegate
 
+#if KOMONDOR_ENABLED
++ (void)load
+{
+    [KDRAppDelegate swizzle:@"AppDelegate"];
+    [RCTSRWebSocket swizzle];
+    
+    [[KDRDevHelper sharedHelper] setupDevHelper];
+}
+#endif
+
 + (void)swizzleDelegateMethod:(SEL)originalSelector forAppDelegate:(Class)appDelegateClass;
 {
     NSString *swizzledSelectorName = [NSString stringWithFormat:@"swizzled_%@", NSStringFromSelector(originalSelector)];
